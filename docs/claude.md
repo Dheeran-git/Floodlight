@@ -9,6 +9,9 @@ Team: Boolean Bandits
 Tagline:
 "Clarity when the water rises."
 
+> Implementation Status: See [status.md](status.md) for current progress.
+> This document is the project constitution. Do not contradict it.
+
 ---
 
 # PROJECT OVERVIEW

@@ -10,6 +10,9 @@ Project Name: Floodlight
 Tagline:
 "Clarity when the water rises."
 
+> Implementation Status: Phase 1 & 2 COMPLETE. See [status.md](status.md) for full progress.
+> Backend is operational. Frontend is scaffolded. Optimization stubs are in place.
+
 ---
 
 # 1. PROJECT VISION

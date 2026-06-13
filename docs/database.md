@@ -3,6 +3,10 @@
 Database:
 PostgreSQL
 
+> Implementation Status: All 8 tables implemented as SQLAlchemy models in `backend/app/models/`.
+> Indexes on severity, priority_score, created_at, (lat, lng) are in place.
+> Tables auto-created on startup (SQLite fallback). Use Alembic for production.
+
 ---
 
 # TABLE: reports

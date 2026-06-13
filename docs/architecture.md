@@ -2,6 +2,10 @@
 
 Version: 1.0
 
+> Implementation Status: All architectural components are scaffolded.
+> Database models, API endpoints, and service layer are operational.
+> See [status.md](status.md) for what needs real business logic.
+
 ---
 
 # SYSTEM OVERVIEW

@@ -1,0 +1,21 @@
+[project]
+name = "floodlight-optimization"
+version = "0.1.0"
+description = "Floodlight — Optimization engine for rescue routing and resource allocation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "networkx>=3.3",
+    "numpy>=1.26.0",
+    "scipy>=1.13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

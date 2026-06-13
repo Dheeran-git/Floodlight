@@ -6,6 +6,10 @@ Base URL
 
 /api/v1
 
+> Implementation Status: All 12 endpoints are implemented and responding.
+> Endpoints for optimization and command return stub data — real logic in Phase 5.
+> Swagger UI available at http://localhost:8000/docs
+
 ---
 
 # REPORTS
