@@ -25,15 +25,18 @@ export function IncidentList({ incidents, isLoading }: IncidentListProps) {
             <button
               type="button"
               onClick={() => selectIncident(incident.id)}
-              className={`flex w-full items-center justify-between rounded border px-2 py-1.5 text-left transition-colors ${
+              className={`flex w-full items-center gap-2 rounded border px-2 py-1.5 text-left transition-colors ${
                 selectedId === incident.id
                   ? 'border-amber-500/40 bg-amber-500/10'
                   : 'border-gray-800 hover:bg-gray-800/50'
               }`}
             >
               <Badge severity={incident.severity} />
-              <span className="text-xs text-gray-400">
-                priority {incident.priority_score}
+              <span className="flex-1 truncate text-xs text-gray-200">
+                {incident.title}
+              </span>
+              <span className="shrink-0 text-xs text-gray-500">
+                {incident.priority_score}
               </span>
             </button>
           </li>

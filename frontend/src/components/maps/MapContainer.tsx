@@ -1,6 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+
+import { renderMarkers } from './mapMarkers'
+import type { MapData } from './mapMarkers'
 
 /** Bengaluru city center as [longitude, latitude]. */
 const BENGALURU_CENTER: [number, number] = [77.59, 12.97]
@@ -8,6 +11,8 @@ const MAP_STYLE = 'mapbox://styles/mapbox/dark-v11'
 const MAP_ZOOM = 11
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
+
+const EMPTY_DATA: MapData = { reports: [], incidents: [], units: [], shelters: [] }
 
 /** Placeholder shown when no Mapbox token is configured. */
 function MapPlaceholder() {
@@ -25,9 +30,16 @@ function MapPlaceholder() {
   )
 }
 
-/** Mapbox GL map centered on Bengaluru. Data layers are added in Phase 5. */
-export function MapContainer() {
+interface MapContainerProps {
+  data?: MapData
+}
+
+/** Mapbox GL map centered on Bengaluru with live data-layer markers. */
+export function MapContainer({ data = EMPTY_DATA }: MapContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<mapboxgl.Map | null>(null)
+  const markersRef = useRef<mapboxgl.Marker[]>([])
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     if (!MAPBOX_TOKEN || !containerRef.current) return
@@ -39,9 +51,22 @@ export function MapContainer() {
       center: BENGALURU_CENTER,
       zoom: MAP_ZOOM,
     })
+    mapRef.current = map
+    map.on('load', () => setReady(true))
 
-    return () => map.remove()
+    return () => {
+      map.remove()
+      mapRef.current = null
+      setReady(false)
+    }
   }, [])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !ready) return
+    markersRef.current.forEach((m) => m.remove())
+    markersRef.current = renderMarkers(map, data)
+  }, [data, ready])
 
   if (!MAPBOX_TOKEN) return <MapPlaceholder />
 

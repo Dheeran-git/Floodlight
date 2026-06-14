@@ -39,17 +39,17 @@ export interface Report {
 /** An incident summary from GET /incidents. Matches IncidentResponse. */
 export interface Incident {
   id: string
+  title: string
   severity: Severity
   priority_score: number
+  status: IncidentStatus
+  latitude: number
+  longitude: number
 }
 
 /** Full incident detail from GET /incidents/{id}. Matches IncidentDetail. */
 export interface IncidentDetail extends Incident {
-  title: string
   description: string
-  status: IncidentStatus
-  latitude: number
-  longitude: number
   created_at: string
   updated_at: string
   reports: Report[]
