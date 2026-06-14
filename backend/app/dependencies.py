@@ -7,8 +7,6 @@ repository dependencies. Used by FastAPI's Depends() system.
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.optimization_run import OptimizationRun
-from app.repositories.base import BaseRepository
 from app.repositories.incident_repository import IncidentRepository
 from app.repositories.report_repository import ReportRepository
 from app.repositories.rescue_unit_repository import RescueUnitRepository
@@ -80,15 +78,16 @@ def get_optimization_service(
     Returns:
         Configured OptimizationService instance.
     """
-    return OptimizationService(
-        repository=BaseRepository(OptimizationRun, db)
-    )
+    return OptimizationService(db=db)
 
 
-def get_command_service() -> CommandService:
-    """Create a CommandService.
+def get_command_service(db: Session = next(get_db())) -> CommandService:
+    """Create a CommandService with a database session.
+
+    Args:
+        db: Database session.
 
     Returns:
         Configured CommandService instance.
     """
-    return CommandService()
+    return CommandService(db=db)

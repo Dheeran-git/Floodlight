@@ -14,12 +14,17 @@ from app.schemas.report import ReportResponse
 class IncidentResponse(BaseModel):
     """Schema for an incident in list responses.
 
-    Matches: GET /incidents response items.
+    Matches: GET /incidents response items. Includes coordinates and title so
+    the frontend can plot incidents on the crisis map.
     """
 
     id: uuid.UUID
+    title: str
     severity: str
     priority_score: int
+    status: str
+    latitude: float
+    longitude: float
 
     model_config = {"from_attributes": True}
 
