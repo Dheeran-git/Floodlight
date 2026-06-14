@@ -1,12 +1,15 @@
 """Predictive escalation — cluster active incidents into forecasted risk zones.
 
 Risk score blends incident severity, spatial density (proximity of multiple
-incidents), and nearby shelter strain into a 0-100 score, with a short-horizon
-projection. Pure Python; no external services required.
+incidents), and nearby shelter strain into a 0-100 score. The short-horizon
+projection is computed by the Wolfram engine when ``WOLFRAM_APP_ID`` is set, and
+by an identical local logistic model otherwise.
 """
 
 import logging
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 
 from sqlalchemy.orm import Session
 
@@ -15,6 +18,18 @@ from app.repositories.shelter_repository import ShelterRepository
 from app.utils.geo import haversine_km
 
 logger = logging.getLogger(__name__)
+
+# Make the monorepo's optimization package importable (PEP 420 namespace).
+_REPO_ROOT = Path(__file__).resolve().parents[4]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+try:
+    from optimization.engine import wolfram
+
+    _WOLFRAM_AVAILABLE = True
+except ImportError:  # pragma: no cover - optional dependency path
+    _WOLFRAM_AVAILABLE = False
 
 # Incidents within this distance are grouped into the same risk zone.
 ZONE_RADIUS_KM = 1.5
@@ -84,14 +99,13 @@ class PredictionService:
         shelter_component = self._shelter_strain(center_lat, center_lon, shelters)
         risk_score = min(severity_component + density_component + shelter_component, 100.0)
 
-        trend = density_component + shelter_component * 0.5
-        predicted = min(risk_score + trend, 100.0)
-        escalation_probability = round(min((risk_score + trend) / 100.0, 0.99), 2)
+        predicted, source = self._project(risk_score, len(cluster))
+        escalation_probability = round(min(predicted / 100.0, 0.99), 2)
 
         reasoning = (
             f"{len(cluster)} active incident(s); peak severity contributes "
             f"{severity_component:.0f}, clustering +{density_component:.0f}, "
-            f"shelter strain +{shelter_component:.0f}. Projected to reach "
+            f"shelter strain +{shelter_component:.0f}. {source} projects "
             f"{predicted:.0f} within {FORECAST_HORIZON_MIN} min."
         )
         return RiskZone(
@@ -104,6 +118,24 @@ class PredictionService:
             incident_count=len(cluster),
             reasoning=reasoning,
         )
+
+    @staticmethod
+    def _project(risk_score: float, incident_count: int) -> tuple[float, str]:
+        """Forecast the escalated risk via Wolfram, or a local logistic model.
+
+        Returns:
+            A tuple of (predicted_risk_score, source_label) where source is
+            "Wolfram" or "Model".
+        """
+        if _WOLFRAM_AVAILABLE:
+            projection = wolfram.simulate_risk_escalation(
+                risk_score, incident_count, FORECAST_HORIZON_MIN
+            )
+            label = "Wolfram" if projection.source == "wolfram" else "Model"
+            return round(projection.predicted_risk, 1), label
+        # Fallback if the optimization package cannot be imported at all.
+        trend = min(5.0 * (incident_count - 1), 20.0)
+        return round(min(risk_score + trend, 100.0), 1), "Model"
 
     @staticmethod
     def _shelter_strain(lat: float, lon: float, shelters: list) -> float:
