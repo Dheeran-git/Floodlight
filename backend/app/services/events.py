@@ -72,7 +72,7 @@ def publish_event(event_type: str, data: dict[str, Any]) -> None:
         "timestamp": datetime.now(UTC).isoformat(),
     }
     loop = manager.loop
-    if loop is None:
+    if loop is None or not loop.is_running():
         return
     try:
         asyncio.run_coroutine_threadsafe(manager.broadcast(message), loop)
