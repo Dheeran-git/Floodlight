@@ -14,6 +14,8 @@ Phase 2 — ✅ COMPLETE
 Phase 3 — ✅ COMPLETE
 Phase 4 — ✅ COMPLETE
 Phase 5 — ✅ COMPLETE (AI uses rule-based fallbacks until API keys are set)
+Phase 6 — ✅ COMPLETE (offline support, UI polish, 70-test backend suite)
+Phase 7 — ✅ COMPLETE in code (simulation + performance); demo/presentation are manual
 
 ---
 
@@ -642,6 +644,43 @@ optimization_complete
 - [ ] Command query returns intelligent answer
 - [ ] WebSocket events update map in real-time
 - [ ] Risk zones display on map
+
+---
+
+# PHASE 6 — POLISH, OFFLINE & TESTING ✅
+
+**Status:** COMPLETE
+**Priority:** Day 6
+
+- **Offline support** (`frontend/src/services/offline/reportQueue.ts`,
+  `hooks/useOfflineSync.ts`, `hooks/useOnlineStatus.ts`): citizen reports queue
+  in IndexedDB when offline or on network failure and auto-flush on reconnect;
+  online/offline indicators in the UI.
+- **Service worker** (`frontend/public/sw.js`): versioned cache, cache-first
+  static assets, `/api` passthrough, offline app-shell fallback; registered in
+  `main.tsx`.
+- **Degraded mode** (`components/dashboard/DegradedBanner.tsx`): operator
+  dashboard shows a banner and keeps the last known state when disconnected.
+- **Testing**: 70-test backend suite in `backend/tests/` (unit + integration +
+  E2E), all passing; ruff clean. Optimization engine adds 16 tests.
+- **UI polish**: map severity legend; clearer loading/empty states.
+
+---
+
+# PHASE 7 — SIMULATION, PERFORMANCE & DEMO ✅ (code)
+
+**Status:** COMPLETE in code. Presentation & demo recording are manual tasks.
+**Priority:** Day 7
+
+- **Simulation** (`backend/app/services/simulation_service.py`,
+  `POST /simulation/run`): injects a scripted "heavy rain" scenario of escalating
+  reports through the live triage → fusion → WebSocket pipeline; triggered from
+  the dashboard via `SimulationButton`. Maps to the demo script (docs/plan.md §24).
+- **Performance**: Mapbox is code-split via `LazyMap` (React.lazy/Suspense);
+  the main entry chunk dropped from ~2,055 kB to ~289 kB.
+- **Bug fixes**: resolved the oversized-bundle build warning; hardened
+  `publish_event` against a non-running event loop.
+- **Presentation / demo recording**: require a human (screen recording, narration).
 
 ---
 

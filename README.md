@@ -14,7 +14,7 @@
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS · voice needs `WHISPER_API_KEY` |
+| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS + offline queue · voice needs `WHISPER_API_KEY` |
 | **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | ✅ Gemini or rule-based fallback |
 | **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Layers built · needs `VITE_MAPBOX_TOKEN` to render |
 | **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` |
