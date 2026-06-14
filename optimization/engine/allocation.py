@@ -12,7 +12,6 @@ from scipy.optimize import linear_sum_assignment
 
 from optimization.engine.graph import haversine_km
 
-SEVERITY_WEIGHT: dict[str, float] = {"P0": 4.0, "P1": 3.0, "P2": 2.0, "P3": 1.0}
 SEVERITY_LABEL: dict[str, str] = {
     "P0": "immediate life threat",
     "P1": "urgent",
@@ -58,11 +57,6 @@ class Assignment:
     distance_km: float
     eta_minutes: int
     reasoning: str  # human-readable WHY this unit->incident (severity + proximity)
-
-
-def _severity_weight(severity: str) -> float:
-    """Weight for a severity code; unknown codes treated as lowest priority."""
-    return SEVERITY_WEIGHT.get(severity, 1.0)
 
 
 def _severity_rank(severity: str) -> int:

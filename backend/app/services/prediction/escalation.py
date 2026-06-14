@@ -7,29 +7,17 @@ by an identical local logistic model otherwise.
 """
 
 import logging
-import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 from sqlalchemy.orm import Session
 
 from app.repositories.incident_repository import IncidentRepository
 from app.repositories.shelter_repository import ShelterRepository
+from app.utils.engine import ENGINE_AVAILABLE as _WOLFRAM_AVAILABLE
+from app.utils.engine import wolfram
 from app.utils.geo import haversine_km
 
 logger = logging.getLogger(__name__)
-
-# Make the monorepo's optimization package importable (PEP 420 namespace).
-_REPO_ROOT = Path(__file__).resolve().parents[4]
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
-try:
-    from optimization.engine import wolfram
-
-    _WOLFRAM_AVAILABLE = True
-except ImportError:  # pragma: no cover - optional dependency path
-    _WOLFRAM_AVAILABLE = False
 
 # Incidents within this distance are grouped into the same risk zone.
 ZONE_RADIUS_KM = 1.5

@@ -7,9 +7,7 @@ with a fully reasoned deployment plan.
 """
 
 import logging
-import sys
 import uuid
-from pathlib import Path
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -21,21 +19,10 @@ from app.repositories.incident_repository import IncidentRepository
 from app.repositories.rescue_unit_repository import RescueUnitRepository
 from app.repositories.shelter_repository import ShelterRepository
 from app.services.events import EVENT_OPTIMIZATION_COMPLETE, publish_event
+from app.utils.engine import ENGINE_AVAILABLE as _ENGINE_AVAILABLE
+from app.utils.engine import allocation, graph, routing
 
 logger = logging.getLogger(__name__)
-
-# Make the monorepo's optimization package importable (PEP 420 namespace).
-_REPO_ROOT = Path(__file__).resolve().parents[3]
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
-
-try:
-    from optimization.engine import allocation, graph, routing
-
-    _ENGINE_AVAILABLE = True
-except ImportError as exc:  # pragma: no cover - depends on optional install
-    logger.warning("Optimization engine unavailable: %s", exc)
-    _ENGINE_AVAILABLE = False
 
 _SPEED_KMH = 30.0
 _FLOOD_RADIUS_KM = 0.8

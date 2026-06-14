@@ -34,6 +34,29 @@ class CommandService:
         self.incidents = IncidentRepository(db)
         self.shelters = ShelterRepository(db)
         self.units = RescueUnitRepository(db)
+        # Per-request caches so context-building and the rule-based answer
+        # don't re-query the same tables.
+        self._active: list | None = None
+        self._all_shelters: list | None = None
+        self._all_units: list | None = None
+
+    def _active_incidents(self) -> list:
+        """Active incidents (priority desc), fetched once per request."""
+        if self._active is None:
+            self._active = self.incidents.get_active()
+        return self._active
+
+    def _shelter_list(self) -> list:
+        """All shelters, fetched once per request."""
+        if self._all_shelters is None:
+            self._all_shelters = self.shelters.get_all(limit=100)
+        return self._all_shelters
+
+    def _unit_list(self) -> list:
+        """All rescue units, fetched once per request."""
+        if self._all_units is None:
+            self._all_units = self.units.get_all(limit=100)
+        return self._all_units
 
     def process_query(self, request: CommandQueryRequest) -> str:
         """Answer an operational query and log it.
@@ -56,9 +79,9 @@ class CommandService:
 
     def _build_context(self) -> str:
         """Summarize the current operational picture as plain text."""
-        incidents = self.incidents.get_active()
-        shelters = self.shelters.get_all(limit=100)
-        units = self.units.get_all(limit=100)
+        incidents = self._active_incidents()
+        shelters = self._shelter_list()
+        units = self._unit_list()
         lines = ["Active incidents (priority desc):"]
         lines += [
             f"  - {i.title} | {i.severity} | priority {i.priority_score} "
@@ -92,7 +115,7 @@ class CommandService:
 
     def _answer_highest_risk(self) -> str:
         """Identify the highest-priority active incident area."""
-        incidents = self.incidents.get_active()
+        incidents = self._active_incidents()
         if not incidents:
             return "No active incidents. Reasoning: the incident list is empty."
         top = incidents[0]
@@ -105,7 +128,7 @@ class CommandService:
 
     def _answer_shelter_overflow(self) -> str:
         """Identify the shelter closest to overflowing."""
-        shelters = self.shelters.get_all(limit=100)
+        shelters = self._shelter_list()
         if not shelters:
             return "No shelters on record. Reasoning: the shelter list is empty."
         worst = max(shelters, key=self._ratio)
@@ -119,7 +142,7 @@ class CommandService:
 
     def _answer_unit_load(self) -> str:
         """Summarize rescue unit availability."""
-        units = self.units.get_all(limit=100)
+        units = self._unit_list()
         available = [u for u in units if u.status == "available"]
         busy = [u for u in units if u.status != "available"]
         return (
@@ -130,10 +153,10 @@ class CommandService:
 
     def _answer_overview(self) -> str:
         """Provide a general operational summary."""
-        incidents = self.incidents.get_active()
-        units = self.units.get_available()
+        incidents = self._active_incidents()
+        available = [u for u in self._unit_list() if u.status == "available"]
         return (
-            f"{len(incidents)} active incidents; {len(units)} units available. "
+            f"{len(incidents)} active incidents; {len(available)} units available. "
             f"Reasoning: summarized live counts. Ask about 'highest risk area', "
             f"'shelter overflow', or 'unit load' for specifics."
         )
