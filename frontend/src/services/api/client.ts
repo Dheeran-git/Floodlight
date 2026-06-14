@@ -86,4 +86,16 @@ export const api = {
         body: JSON.stringify({ query }),
       }),
   },
+
+  simulation: {
+    run: () =>
+      apiFetch<{
+        success: boolean
+        scenario: string
+        reports_created: number
+        report_ids: string[]
+      }>('/simulation/run', {
+        method: 'POST',
+      }),
+  },
 }

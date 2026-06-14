@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { useCreateReport } from '@/hooks'
+import { useCreateReport, useOfflineSync, useOnlineStatus } from '@/hooks'
 import { useGeolocation } from './useGeolocation'
 
 /** Parse a coordinate text input into a number or null. */
@@ -15,21 +15,53 @@ const INPUT_CLASS =
   'w-full rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm ' +
   'text-gray-100 placeholder-gray-500 focus:border-amber-500 focus:outline-none'
 
-/** Citizen SOS report form with geolocation capture and manual fallback. */
+/** Local submission outcome for the form's status messages. */
+type Outcome =
+  | { kind: 'idle' }
+  | { kind: 'submitting' }
+  | { kind: 'sent'; reportId: string }
+  | { kind: 'queued' }
+  | { kind: 'error'; message: string }
+
+/** Citizen SOS report form with geolocation capture and offline queueing. */
 export function ReportForm() {
   const [text, setText] = useState('')
+  const [outcome, setOutcome] = useState<Outcome>({ kind: 'idle' })
   const geo = useGeolocation()
   const mutation = useCreateReport()
+  const online = useOnlineStatus()
+  const { queuedCount, enqueue } = useOfflineSync()
 
   const lat = geo.latitude
   const lng = geo.longitude
+  const submitting = outcome.kind === 'submitting'
   const canSubmit =
-    text.trim() !== '' && lat !== null && lng !== null && !mutation.isPending
+    text.trim() !== '' && lat !== null && lng !== null && !submitting
+
+  async function submit(latitude: number, longitude: number) {
+    const payload = { text: text.trim(), latitude, longitude }
+    setOutcome({ kind: 'submitting' })
+    if (!online) {
+      await enqueue(payload)
+      setOutcome({ kind: 'queued' })
+      setText('')
+      return
+    }
+    try {
+      const result = await mutation.mutateAsync(payload)
+      setOutcome({ kind: 'sent', reportId: result.report_id })
+      setText('')
+    } catch {
+      await enqueue(payload)
+      setOutcome({ kind: 'queued' })
+      setText('')
+    }
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
     if (lat === null || lng === null) return
-    mutation.mutate({ text: text.trim(), latitude: lat, longitude: lng })
+    void submit(lat, lng)
   }
 
   return (
@@ -87,17 +119,29 @@ export function ReportForm() {
         disabled={!canSubmit}
         className="w-full rounded bg-amber-500 px-3 py-2 text-sm font-semibold text-gray-950 hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {mutation.isPending ? 'Submitting…' : 'Submit report'}
+        {submitting ? 'Submitting…' : online ? 'Submit report' : 'Queue report (offline)'}
       </button>
 
-      {mutation.isSuccess && (
-        <p className="rounded border border-green-500/40 bg-green-500/10 px-3 py-2 text-xs text-green-300">
-          Report received. ID: {mutation.data.report_id}
+      {!online && (
+        <p className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+          You are offline. Reports are saved and will send automatically when
+          you reconnect.
+          {queuedCount > 0 && ` (${queuedCount} queued)`}
         </p>
       )}
-      {mutation.isError && (
+      {outcome.kind === 'sent' && (
+        <p className="rounded border border-green-500/40 bg-green-500/10 px-3 py-2 text-xs text-green-300">
+          Report received. ID: {outcome.reportId}
+        </p>
+      )}
+      {outcome.kind === 'queued' && (
+        <p className="rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+          Report queued. It will be sent when a connection is available.
+        </p>
+      )}
+      {outcome.kind === 'error' && (
         <p className="rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
-          {(mutation.error as Error).message || 'Submission failed.'}
+          {outcome.message || 'Submission failed.'}
         </p>
       )}
     </form>

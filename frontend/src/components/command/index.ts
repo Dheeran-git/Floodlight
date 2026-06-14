@@ -2,3 +2,4 @@
 
 export { CommandPanel } from './CommandPanel'
 export { OptimizeButton } from './OptimizeButton'
+export { SimulationButton } from './SimulationButton'

@@ -1,15 +1,16 @@
 import { useEffect, useMemo } from 'react'
 
-import { CommandPanel, OptimizeButton } from '@/components/command'
-import { DashboardShell } from '@/components/dashboard'
+import { CommandPanel, OptimizeButton, SimulationButton } from '@/components/command'
+import { DashboardShell, DegradedBanner } from '@/components/dashboard'
 import { IncidentList } from '@/components/incidents'
-import { MapContainer } from '@/components/maps'
+import { LazyMap, MapLegend } from '@/components/maps'
 import type { MapData } from '@/components/maps'
 import { ResourceList } from '@/components/resources'
 import { ShelterList } from '@/components/shelters'
 import { Card, SidePanel } from '@/components/ui'
 import {
   useIncidents,
+  useOnlineStatus,
   useReports,
   useResources,
   useShelters,
@@ -22,6 +23,7 @@ export function OperationsDesk() {
   const reports = useReports()
   const resources = useResources()
   const shelters = useShelters()
+  const online = useOnlineStatus()
 
   const setConnection = useUiStore((state) => state.setConnection)
   const leftCollapsed = useUiStore((state) => state.leftPanelCollapsed)
@@ -32,12 +34,13 @@ export function OperationsDesk() {
   const anyError = incidents.isError || resources.isError || shelters.isError
   const anyLoading =
     incidents.isLoading || resources.isLoading || shelters.isLoading
+  const degraded = !online || anyError
 
   useEffect(() => {
-    if (anyError) setConnection('disconnected')
+    if (degraded) setConnection('disconnected')
     else if (anyLoading) setConnection('connecting')
     else setConnection('connected')
-  }, [anyError, anyLoading, setConnection])
+  }, [degraded, anyLoading, setConnection])
 
   const mapData: MapData = useMemo(
     () => ({
@@ -55,6 +58,7 @@ export function OperationsDesk() {
       unitCount={resources.data?.length ?? 0}
       shelterCount={shelters.data?.length ?? 0}
     >
+      {degraded && <DegradedBanner />}
       <div className="flex h-full">
         <SidePanel
           title="Incidents"
@@ -68,8 +72,9 @@ export function OperationsDesk() {
           />
         </SidePanel>
 
-        <div className="flex-1">
-          <MapContainer data={mapData} />
+        <div className="relative flex-1">
+          <LazyMap data={mapData} />
+          <MapLegend />
         </div>
 
         <SidePanel
@@ -82,6 +87,9 @@ export function OperationsDesk() {
           <ShelterList shelters={shelters.data ?? []} isLoading={shelters.isLoading} />
           <Card title="Optimization">
             <OptimizeButton />
+          </Card>
+          <Card title="Simulation">
+            <SimulationButton />
           </Card>
           <CommandPanel />
         </SidePanel>
