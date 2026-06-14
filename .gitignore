@@ -70,7 +70,9 @@ htmlcov/
 # ===========================
 # Alembic
 # ===========================
-backend/alembic/versions/
+# Migration scripts are version-controlled (schema source of truth).
+# Only ignore compiled caches inside the versions directory.
+backend/alembic/versions/__pycache__/
 
 # ===========================
 # Misc
