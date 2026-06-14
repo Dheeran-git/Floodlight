@@ -17,8 +17,8 @@
 | **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS + offline queue · voice needs `WHISPER_API_KEY` |
 | **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | ✅ Gemini or rule-based fallback |
 | **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Layers built · needs `VITE_MAPBOX_TOKEN` to render |
-| **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` |
-| **Optimization Engine** | Resource allocation, route planning, shelter balancing | ✅ NetworkX + SciPy |
+| **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` · Wolfram or local model |
+| **Optimization Engine** | Resource allocation, route planning, shelter balancing | ✅ NetworkX + SciPy · Wolfram risk sim |
 | **Command Intelligence** | Operational Q&A with AI-powered reasoning | ✅ Gemini or rule-based fallback |
 
 > See [STATUS.md](docs/status.md) for detailed implementation progress.

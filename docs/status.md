@@ -19,6 +19,27 @@ Phase 7 — ✅ COMPLETE in code (simulation + performance); demo/presentation a
 
 ---
 
+# QUALITY & TOOLING
+
+- **Wolfram integration**: `optimization/engine/wolfram.py` (Wolfram|Alpha
+  client + logistic risk model) drives prediction escalation; falls back to a
+  local model without `WOLFRAM_APP_ID`.
+- **Tests (176 automated)**: backend pytest **70** (unit/integration/E2E),
+  optimization pytest **26** (graph/routing/allocation/wolfram), frontend
+  **Vitest 80** (components/hooks/stores/offline). All green.
+- **Smoke**: `scripts/smoke.sh` — 12 endpoints + WebSocket against a live server.
+- **CI**: `.github/workflows/ci.yml` runs backend (ruff + alembic + pytest),
+  optimization (ruff + pytest), and frontend (eslint + tsc + vitest + build).
+- **Reviewed & hardened**: a `/code-review` + `/simplify` pass fixed a P0
+  allocation inversion, unbounded route growth, a priority-lowering fusion bug,
+  an import-time DB-session leak, an offline duplicate-submission risk, a
+  form-freeze path, and wired risk zones into the map; then deduped the engine
+  bootstrap, removed dead code, and cached per-request command queries.
+- **Lint/type**: `ruff check` (backend + optimization) and `tsc --noEmit` +
+  `eslint` (frontend) all clean.
+
+---
+
 # PHASE 1 — REPOSITORY FOUNDATION ✅
 
 **Status:** COMPLETE
@@ -634,16 +655,16 @@ optimization_complete
 
 ## Phase 5 Acceptance Criteria
 
-- [ ] Citizen can submit text report → appears on map
-- [ ] Voice report is transcribed and triaged
-- [ ] AI assigns severity (P0-P3) with reasoning
-- [ ] Duplicate reports merge into single incident
-- [ ] Map shows all entities (incidents, units, shelters, routes)
-- [ ] Optimization assigns unit to incident, generates route
-- [ ] Shelter overflow prediction works
-- [ ] Command query returns intelligent answer
-- [ ] WebSocket events update map in real-time
-- [ ] Risk zones display on map
+- [x] Citizen can submit text report → appears on map
+- [x] Voice report is transcribed and triaged (endpoint live; needs `WHISPER_API_KEY`)
+- [x] AI assigns severity (P0-P3) with reasoning
+- [x] Duplicate reports merge into single incident
+- [x] Map shows all entities (incidents, units, shelters, routes, risk zones)
+- [x] Optimization assigns unit to incident, generates route
+- [x] Shelter overflow prediction works
+- [x] Command query returns intelligent answer
+- [x] WebSocket events update map in real-time
+- [x] Risk zones display on map
 
 ---
 
