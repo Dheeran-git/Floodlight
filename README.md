@@ -14,12 +14,12 @@
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | 🔲 Phase 5 |
-| **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | 🔲 Phase 5 |
-| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | 🟡 Foundation ✅ (Phase 3) · data layers Phase 5 |
-| **Predictive Escalation** | Forecast worsening areas before they become critical | 🔲 Phase 5 |
-| **Optimization Engine** | Resource allocation, route planning, shelter balancing | 🔲 Phase 5 |
-| **Command Intelligence** | Operational Q&A with AI-powered reasoning | 🔲 Phase 5 |
+| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS · voice needs `WHISPER_API_KEY` |
+| **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | ✅ Gemini or rule-based fallback |
+| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Layers built · needs `VITE_MAPBOX_TOKEN` to render |
+| **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` |
+| **Optimization Engine** | Resource allocation, route planning, shelter balancing | ✅ NetworkX + SciPy |
+| **Command Intelligence** | Operational Q&A with AI-powered reasoning | ✅ Gemini or rule-based fallback |
 
 > See [STATUS.md](docs/status.md) for detailed implementation progress.
 

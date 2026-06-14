@@ -13,7 +13,7 @@ Phase 1 — ✅ COMPLETE
 Phase 2 — ✅ COMPLETE
 Phase 3 — ✅ COMPLETE
 Phase 4 — ✅ COMPLETE
-Phase 5 — 🔲 PENDING
+Phase 5 — ✅ COMPLETE (AI uses rule-based fallbacks until API keys are set)
 
 ---
 
@@ -360,13 +360,35 @@ Add any missing queries discovered during Phase 5 integration.
 
 ---
 
-# PHASE 5 — CORE FEATURES 🔲
+# PHASE 5 — CORE FEATURES ✅
 
-**Status:** PENDING
+**Status:** COMPLETE
 **Suggested Owner:** ALL MEMBERS
 **Priority:** CRITICAL — Days 3-6
 
-This is the main feature phase. All four members should work in parallel.
+The main feature phase is implemented end-to-end. AI features (triage, command)
+use Google Gemini when `GEMINI_API_KEY` is set and fall back to deterministic
+rule-based logic otherwise, so the whole pipeline runs and is verifiable without
+external keys. Voice transcription requires `WHISPER_API_KEY` (returns 503
+otherwise); the live map requires `VITE_MAPBOX_TOKEN` (placeholder otherwise).
+
+**Delivered**
+- 5.1 Citizen reporting: report form (text + geolocation) → `POST /reports`;
+  voice endpoint `POST /reports/voice` (Whisper).
+- 5.2 AI triage: severity/credibility/category + reasoning
+  (`app/services/triage/`); GPS-proximity incident fusion (<500m).
+- 5.3 Optimization engine: NetworkX flood-aware routing + SciPy min-cost
+  allocation + shelter balancing (`optimization/engine/`), wired through
+  `optimization_service` → `POST /optimization/run` with reasoned deployment plan.
+- 5.4 Live crisis map: report/incident/unit/shelter marker layers with popups.
+- 5.5 Predictive escalation: risk-zone forecasting (`GET /prediction/risk`).
+- 5.6 WebSockets: `/api/v1/ws` broadcasting report/incident/resource/optimization
+  events (`app/services/events.py`).
+- 5.7 Command intelligence: context-aware operational Q&A with reasoning.
+
+**Verified (no keys):** report → triage (P0) → fusion; optimization returns 4
+reasoned assignments + routes + shelter advice; prediction returns risk zones;
+command answers all three example questions; WebSocket delivers live events.
 
 ---
 
