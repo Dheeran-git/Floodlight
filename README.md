@@ -16,7 +16,7 @@
 |--------|-------------|--------|
 | **Citizen Reporting** | Text/voice reports with GPS, offline queueing | 🔲 Phase 5 |
 | **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | 🔲 Phase 5 |
-| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | 🔲 Phase 3 |
+| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | 🟡 Foundation ✅ (Phase 3) · data layers Phase 5 |
 | **Predictive Escalation** | Forecast worsening areas before they become critical | 🔲 Phase 5 |
 | **Optimization Engine** | Resource allocation, route planning, shelter balancing | 🔲 Phase 5 |
 | **Command Intelligence** | Operational Q&A with AI-powered reasoning | 🔲 Phase 5 |

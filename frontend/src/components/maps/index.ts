@@ -1,2 +1,3 @@
 /** Map components — Mapbox GL JS integration. */
-export {}
+
+export { MapContainer } from './MapContainer'

@@ -1,2 +1,3 @@
 /** Operations desk page — crisis map and command dashboard. */
-export {}
+
+export { OperationsDesk } from './OperationsDesk'

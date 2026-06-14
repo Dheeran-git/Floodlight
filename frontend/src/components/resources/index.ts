@@ -1,2 +1,3 @@
 /** Resource components — rescue unit cards, assignment UI. */
-export {}
+
+export { ResourceList } from './ResourceList'

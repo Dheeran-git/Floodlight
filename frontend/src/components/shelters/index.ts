@@ -1,2 +1,3 @@
 /** Shelter components — capacity cards, risk indicators. */
-export {}
+
+export { ShelterList } from './ShelterList'

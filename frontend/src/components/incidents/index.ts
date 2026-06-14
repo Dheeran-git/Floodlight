@@ -1,2 +1,3 @@
 /** Incident components — incident list, detail, severity badges. */
-export {}
+
+export { IncidentList } from './IncidentList'
