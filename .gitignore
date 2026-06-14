@@ -64,8 +64,10 @@ logs/
 # ===========================
 .coverage
 htmlcov/
+coverage/
 .pytest_cache/
 .mypy_cache/
+.vitest/
 
 # ===========================
 # Alembic

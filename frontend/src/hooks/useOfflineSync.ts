@@ -47,9 +47,12 @@ export function useOfflineSync(): OfflineSync {
   )
 
   useEffect(() => {
-    void flush()
+    // Sync the pending-report count from IndexedDB (an external system) on
+    // mount and whenever connectivity returns. flush() is async, so setState
+    // runs in a later microtask, not synchronously within the effect.
     const onOnline = () => void flush()
     window.addEventListener('online', onOnline)
+    onOnline()
     return () => window.removeEventListener('online', onOnline)
   }, [flush])
 
