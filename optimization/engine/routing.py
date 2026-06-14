@@ -91,27 +91,23 @@ def find_evacuation_route(
     shelter_ids: list[str],
     speed_kmh: float = 30.0,
 ) -> RouteResult | None:
-    """Return the safe route to the nearest reachable shelter by route weight."""
+    """Return the best route to a shelter, preferring safe over short.
+
+    Among reachable shelters, the nearest route that avoids flooding is
+    returned; only if no safe route exists is the nearest flooded route used
+    as a last resort.
+    """
     if source_id not in graph:
         return None
-    best: RouteResult | None = None
-    best_weight = float("inf")
+    candidates: list[RouteResult] = []
     for shelter_id in shelter_ids:
         if shelter_id not in graph:
             continue
-        try:
-            weight = nx.astar_path_length(
-                graph,
-                source_id,
-                shelter_id,
-                heuristic=_heuristic(graph),
-                weight="weight",
-            )
-        except nx.NetworkXNoPath:
-            continue
-        if weight < best_weight:
-            route = find_safe_route(graph, source_id, shelter_id, speed_kmh)
-            if route is not None:
-                best_weight = weight
-                best = route
-    return best
+        route = find_safe_route(graph, source_id, shelter_id, speed_kmh)
+        if route is not None:
+            candidates.append(route)
+    if not candidates:
+        return None
+    safe_routes = [r for r in candidates if r.safe]
+    pool = safe_routes or candidates
+    return min(pool, key=lambda r: r.distance_km)

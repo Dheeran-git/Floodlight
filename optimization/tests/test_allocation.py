@@ -90,3 +90,27 @@ def test_shelter_no_arrivals_means_no_saturation() -> None:
     shelters = [ShelterInput("s", "Hall", capacity=100, current_occupancy=50, risk_score=0.2)]
     advice = balance_shelters(shelters, arrival_rate_per_min=0.0)
     assert advice[0].time_to_saturation_min is None
+
+
+def test_p0_prioritized_even_when_farther() -> None:
+    """A single unit must serve a distant P0 over a nearby P3 (regression)."""
+    units = [UnitInput("u1", 12.97, 77.59, "boat", 6)]
+    incidents = [
+        IncidentInput("far_p0", 13.06, 77.59, "P0", 95),
+        IncidentInput("near_p3", 12.98, 77.59, "P3", 30),
+    ]
+    assignments = allocate_resources(units, incidents)
+    assert len(assignments) == 1
+    assert assignments[0].incident_id == "far_p0"
+
+
+def test_system_overflow_does_not_redirect_to_full_shelter() -> None:
+    """When every shelter is near capacity, advise escalation, not redirect."""
+    shelters = [
+        ShelterInput("a", "Hall A", capacity=100, current_occupancy=98, risk_score=0.9),
+        ShelterInput("b", "Hall B", capacity=100, current_occupancy=95, risk_score=0.9),
+    ]
+    advice = balance_shelters(shelters)
+    for item in advice:
+        assert "escalate" in item.recommendation.lower()
+        assert "redirect new arrivals to" not in item.recommendation.lower()

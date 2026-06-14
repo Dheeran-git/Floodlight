@@ -38,13 +38,30 @@ export function ReportForm() {
   const canSubmit =
     text.trim() !== '' && lat !== null && lng !== null && !submitting
 
+  async function queueOffline(payload: {
+    text: string
+    latitude: number
+    longitude: number
+  }) {
+    // Always resolve to a terminal outcome so the form never stays "submitting":
+    // if local storage itself fails, surface an error the user can retry from.
+    try {
+      await enqueue(payload)
+      setOutcome({ kind: 'queued' })
+      setText('')
+    } catch {
+      setOutcome({
+        kind: 'error',
+        message: 'Could not save your report on this device. Please try again.',
+      })
+    }
+  }
+
   async function submit(latitude: number, longitude: number) {
     const payload = { text: text.trim(), latitude, longitude }
     setOutcome({ kind: 'submitting' })
     if (!online) {
-      await enqueue(payload)
-      setOutcome({ kind: 'queued' })
-      setText('')
+      await queueOffline(payload)
       return
     }
     try {
@@ -52,9 +69,7 @@ export function ReportForm() {
       setOutcome({ kind: 'sent', reportId: result.report_id })
       setText('')
     } catch {
-      await enqueue(payload)
-      setOutcome({ kind: 'queued' })
-      setText('')
+      await queueOffline(payload)
     }
   }
 

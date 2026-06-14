@@ -71,7 +71,9 @@ def _severity_compatible(report_sev: str | None, incident_sev: str) -> bool:
     """Allow fusion when severities are within one level of each other."""
     if report_sev is None:
         return False
-    return abs(_SEVERITY_RANK[report_sev] - _SEVERITY_RANK[incident_sev]) <= 1
+    report_rank = _SEVERITY_RANK.get(report_sev, 3)
+    incident_rank = _SEVERITY_RANK.get(incident_sev, 3)
+    return abs(report_rank - incident_rank) <= 1
 
 
 def _create_incident(db: Session, report: Report) -> Incident:
@@ -115,6 +117,8 @@ def _recompute_priority(db: Session, incident: Incident) -> None:
     reports = list(db.execute(stmt).scalars().all())
     severities = [r.severity for r in reports if r.severity]
     if severities:
-        incident.severity = min(severities, key=lambda s: _SEVERITY_RANK[s])
+        incident.severity = min(severities, key=lambda s: _SEVERITY_RANK.get(s, 3))
     base = _SEVERITY_BASE.get(incident.severity, 30)
-    incident.priority_score = min(base + 2 * len(reports), 100)
+    computed = min(base + 2 * len(reports), 100)
+    # A corroborating report must never lower an incident's priority.
+    incident.priority_score = max(incident.priority_score, computed)

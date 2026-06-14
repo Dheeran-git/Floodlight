@@ -2,9 +2,9 @@ import { useMutation } from '@tanstack/react-query'
 
 import { api } from '@/services/api/client'
 
-/** Shape of an optimization run result (partial — assignment summary only). */
+/** Shape of an optimization run result (partial — deployment plan only). */
 export interface OptimizationResult {
-  assignments?: unknown[]
+  deployment_plan?: unknown[]
   [key: string]: unknown
 }
 

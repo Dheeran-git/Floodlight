@@ -45,6 +45,21 @@ export function createPulseMarker(colorClass: string): HTMLDivElement {
   return wrap
 }
 
+/** Translucent fill color for a forecasted risk zone by risk score (0-100). */
+export function riskColor(score: number): string {
+  if (score >= 80) return 'bg-red-500/30 border-red-400'
+  if (score >= 60) return 'bg-orange-500/30 border-orange-400'
+  if (score >= 40) return 'bg-yellow-400/30 border-yellow-300'
+  return 'bg-blue-500/25 border-blue-400'
+}
+
+/** Build a large translucent disc element representing a risk zone area. */
+export function createRiskZone(colorClass: string): HTMLDivElement {
+  const el = document.createElement('div')
+  el.className = `h-12 w-12 rounded-full border ${colorClass}`.trim()
+  return el
+}
+
 /** Build popup HTML for a key/value summary (values are escaped). */
 export function popupHtml(title: string, rows: Array<[string, string]>): string {
   const escape = (s: string) =>

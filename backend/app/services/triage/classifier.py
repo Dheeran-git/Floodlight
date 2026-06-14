@@ -17,9 +17,11 @@ VALID_SEVERITIES = {"P0", "P1", "P2", "P3"}
 _SEVERITY_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
     (
         "P0",
+        # Specific life-threat signals. Avoid bare "child"/"baby" — they
+        # over-trigger on benign reports; "child trapped" still hits "trapped".
         ("trapped", "drowning", "drown", "swept", "unconscious", "not breathing",
-         "can't breathe", "cannot breathe", "baby", "child", "electrocut",
-         "cardiac", "dying", "rooftop", "submerged car"),
+         "can't breathe", "cannot breathe", "electrocut", "cardiac", "dying",
+         "rooftop", "submerged car"),
     ),
     (
         "P1",

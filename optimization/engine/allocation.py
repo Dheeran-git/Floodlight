@@ -19,6 +19,12 @@ SEVERITY_LABEL: dict[str, str] = {
     "P2": "moderate",
     "P3": "low",
 }
+# Severity must dominate proximity: a more severe incident is always preferred
+# over a less severe one, regardless of distance. Distance only breaks ties
+# within the same severity tier. The scale exceeds any plausible intra-city
+# distance (km), so one severity level outweighs any distance difference.
+_SEVERITY_TIER: dict[str, int] = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+_PRIORITY_SCALE = 100_000.0
 
 
 @dataclass(frozen=True)
@@ -72,17 +78,20 @@ def allocate_resources(
 ) -> list[Assignment]:
     """Min-cost assignment of units to incidents via Hungarian algorithm.
 
-    Cost[u][i] = haversine_km(unit, incident) / severity_weight(incident), so
-    P0 incidents are cheapest to serve and thus prioritized. Non-square matrices
-    (unequal counts) are handled — only real pairings are returned. Results are
-    sorted by incident severity (P0 first) then distance.
+    Cost[u][i] = severity_tier(incident) * SCALE + haversine_km(unit, incident),
+    where SCALE exceeds any intra-city distance. Severity therefore dominates:
+    a P0 incident is always served before a less severe one regardless of
+    distance, with proximity breaking ties within a severity tier. Non-square
+    matrices (unequal counts) are handled — only real pairings are returned.
+    Results are sorted by incident severity (P0 first) then distance.
     """
     if not units or not incidents:
         return []
 
     cost: list[list[float]] = [
         [
-            haversine_km(u.lat, u.lon, inc.lat, inc.lon) / _severity_weight(inc.severity)
+            _SEVERITY_TIER.get(inc.severity, 3) * _PRIORITY_SCALE
+            + haversine_km(u.lat, u.lon, inc.lat, inc.lon)
             for inc in incidents
         ]
         for u in units
@@ -98,9 +107,10 @@ def allocate_resources(
         eta_minutes = round(distance_km / speed_kmh * 60) if speed_kmh > 0 else 0
         label = SEVERITY_LABEL.get(incident.severity, "incident")
         reasoning = (
-            f"{unit.type} {unit.id} -> {incident.severity} incident: nearest available "
-            f"unit at {distance_km:.1f} km (ETA {eta_minutes} min); "
-            f"{incident.severity} prioritized for {label}."
+            f"{unit.type} {unit.id} -> {incident.severity} incident: assigned "
+            f"at {distance_km:.1f} km (ETA {eta_minutes} min); "
+            f"{incident.severity} prioritized for {label} ahead of lower-severity "
+            f"incidents."
         )
         assignments.append(
             Assignment(
@@ -162,38 +172,22 @@ def balance_shelters(
     if not shelters:
         return []
 
-    redirect_target = min(
-        shelters,
-        key=lambda s: (s.current_occupancy / s.capacity) if s.capacity > 0 else 1.0,
-    )
+    def _ratio(s: ShelterInput) -> float:
+        return (s.current_occupancy / s.capacity) if s.capacity > 0 else 1.0
+
+    redirect_target = min(shelters, key=_ratio)
+    # Only safe to redirect arrivals if the emptiest shelter has real headroom.
+    system_overflow = _ratio(redirect_target) >= 0.9
 
     advice: list[ShelterAdvice] = []
     for s in shelters:
-        ratio = (s.current_occupancy / s.capacity) if s.capacity > 0 else 1.0
+        ratio = _ratio(s)
         overflow_risk = _clamp(0.6 * ratio + 0.4 * s.risk_score)
         remaining = s.capacity - s.current_occupancy
-
         if remaining <= 0 or arrival_rate_per_min <= 0:
             time_to_saturation: float | None = None
         else:
             time_to_saturation = remaining / arrival_rate_per_min
-
-        pct = round(ratio * 100)
-        if ratio >= 1.0:
-            recommendation = (
-                f"At capacity ({pct}%); stop intake and redirect new arrivals to "
-                f"{redirect_target.name}."
-            )
-        elif ratio >= 0.9 and s.id != redirect_target.id:
-            recommendation = (
-                f"Near capacity ({pct}%); redirect new arrivals to {redirect_target.name}."
-            )
-        elif s.id == redirect_target.id:
-            recommendation = (
-                f"Lowest occupancy ({pct}%); accept redirected arrivals from fuller shelters."
-            )
-        else:
-            recommendation = f"Stable ({pct}%); continue accepting arrivals."
 
         advice.append(
             ShelterAdvice(
@@ -202,9 +196,42 @@ def balance_shelters(
                 occupancy_ratio=ratio,
                 overflow_risk=overflow_risk,
                 time_to_saturation_min=time_to_saturation,
-                recommendation=recommendation,
+                recommendation=_shelter_recommendation(
+                    s, ratio, redirect_target, system_overflow
+                ),
             )
         )
 
     advice.sort(key=lambda a: a.overflow_risk, reverse=True)
     return advice
+
+
+def _shelter_recommendation(
+    shelter: ShelterInput,
+    ratio: float,
+    redirect_target: ShelterInput,
+    system_overflow: bool,
+) -> str:
+    """Build an actionable recommendation for one shelter."""
+    pct = round(ratio * 100)
+    if system_overflow and ratio >= 0.9:
+        return (
+            f"At {pct}%; all shelters near capacity — escalate for additional "
+            f"shelter capacity, do not redirect."
+        )
+    if ratio >= 1.0:
+        return (
+            f"At capacity ({pct}%); stop intake and redirect new arrivals to "
+            f"{redirect_target.name}."
+        )
+    if ratio >= 0.9 and shelter.id != redirect_target.id:
+        return (
+            f"Near capacity ({pct}%); redirect new arrivals to "
+            f"{redirect_target.name}."
+        )
+    if shelter.id == redirect_target.id:
+        return (
+            f"Lowest occupancy ({pct}%); accept redirected arrivals from fuller "
+            f"shelters."
+        )
+    return f"Stable ({pct}%); continue accepting arrivals."

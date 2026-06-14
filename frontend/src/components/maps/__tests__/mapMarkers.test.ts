@@ -145,4 +145,27 @@ describe('renderMarkers', () => {
     })
     expect(markerInstances[0].lngLat).toEqual([12, 34])
   })
+
+  it('renders a marker for each forecasted risk zone', () => {
+    const markers = renderMarkers(fakeMap, {
+      reports: [],
+      incidents: [],
+      units: [],
+      shelters: [],
+      riskZones: [
+        {
+          center_lat: 12.97,
+          center_lon: 77.59,
+          radius_km: 1.5,
+          risk_score: 90,
+          predicted_risk_score: 95,
+          escalation_probability: 0.9,
+          incident_count: 3,
+          reasoning: 'cluster of P0 incidents',
+        },
+      ],
+    })
+    expect(markers).toHaveLength(1)
+    expect(markerInstances[0].lngLat).toEqual([77.59, 12.97])
+  })
 })

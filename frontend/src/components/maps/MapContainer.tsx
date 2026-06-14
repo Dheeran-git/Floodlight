@@ -38,7 +38,6 @@ interface MapContainerProps {
 export function MapContainer({ data = EMPTY_DATA }: MapContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
-  const markersRef = useRef<mapboxgl.Marker[]>([])
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -64,8 +63,10 @@ export function MapContainer({ data = EMPTY_DATA }: MapContainerProps) {
   useEffect(() => {
     const map = mapRef.current
     if (!map || !ready) return
-    markersRef.current.forEach((m) => m.remove())
-    markersRef.current = renderMarkers(map, data)
+    // Markers are recreated whenever data changes; the cleanup removes the
+    // previous set before the next run and on unmount (no leaked DOM/popups).
+    const markers = renderMarkers(map, data)
+    return () => markers.forEach((m) => m.remove())
   }, [data, ready])
 
   if (!MAPBOX_TOKEN) return <MapPlaceholder />

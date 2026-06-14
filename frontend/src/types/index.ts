@@ -84,5 +84,17 @@ export interface ShelterRisk {
   overflow_probability: number
 }
 
+/** Forecasted risk zone from GET /prediction/risk. Matches RiskZoneResponse. */
+export interface RiskZone {
+  center_lat: number
+  center_lon: number
+  radius_km: number
+  risk_score: number
+  predicted_risk_score: number
+  escalation_probability: number
+  incident_count: number
+  reasoning: string
+}
+
 /** Backend connection state for status indicators. */
 export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected'

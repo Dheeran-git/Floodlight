@@ -152,7 +152,12 @@ class OptimizationService:
         return plan
 
     def _persist_routes(self, assignments: list) -> None:
-        """Store a Route row for each assignment."""
+        """Replace prior planned routes with the latest plan.
+
+        Clears existing ``planned`` routes first so repeated runs don't
+        accumulate stale, duplicate routes (active/completed routes are kept).
+        """
+        self.db.query(Route).filter(Route.status == "planned").delete()
         for item in assignments:
             self.db.add(Route(
                 incident_id=uuid.UUID(item.incident_id),

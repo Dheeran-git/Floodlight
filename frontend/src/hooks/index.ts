@@ -3,6 +3,7 @@
 export { useIncidents } from './useIncidents'
 export { useResources } from './useResources'
 export { useShelters, useShelterRisks } from './useShelters'
+export { useRiskZones } from './useRiskZones'
 export { useReports } from './useReports'
 export { useCreateReport } from './useCreateReport'
 export type { CreateReportInput } from './useCreateReport'

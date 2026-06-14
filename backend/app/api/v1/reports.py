@@ -17,6 +17,9 @@ from app.services.triage.transcription import transcribe, transcription_availabl
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
+# Cap voice uploads to keep a single request from buffering unbounded memory.
+_MAX_AUDIO_BYTES = 25 * 1024 * 1024
+
 
 def _get_service(db: Session = Depends(get_db)) -> ReportService:
     """Compose report service with its dependencies."""
@@ -73,7 +76,10 @@ def create_voice_report(
             status_code=503,
             detail="Voice transcription is not configured (set WHISPER_API_KEY).",
         )
-    text = transcribe(audio.file.read(), filename=audio.filename or "audio.webm")
+    audio_bytes = audio.file.read(_MAX_AUDIO_BYTES + 1)
+    if len(audio_bytes) > _MAX_AUDIO_BYTES:
+        raise HTTPException(status_code=413, detail="Audio file too large (max 25 MB).")
+    text = transcribe(audio_bytes, filename=audio.filename or "audio.webm")
     if not text:
         raise HTTPException(status_code=422, detail="Could not transcribe audio.")
     report = service.create_report(

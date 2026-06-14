@@ -7,10 +7,6 @@ ignore = ["E501"]
 [lint.isort]
 known-first-party = ["app"]
 
-[lint.per-file-ignores]
-# Dependency-injection factories intentionally resolve a session in defaults.
-"app/dependencies.py" = ["B008"]
-
 [lint.flake8-bugbear]
 # FastAPI dependency-injection markers are called in argument defaults by design.
 extend-immutable-calls = [

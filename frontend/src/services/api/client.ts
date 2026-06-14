@@ -71,6 +71,10 @@ export const api = {
     risks: () => apiFetch<unknown[]>('/shelters/risk'),
   },
 
+  prediction: {
+    risk: () => apiFetch<unknown[]>('/prediction/risk'),
+  },
+
   optimization: {
     run: () =>
       apiFetch<{ success: boolean; run_id: string }>('/optimization/run', {

@@ -13,6 +13,7 @@ import {
   useOnlineStatus,
   useReports,
   useResources,
+  useRiskZones,
   useShelters,
 } from '@/hooks'
 import { useUiStore } from '@/state'
@@ -23,6 +24,7 @@ export function OperationsDesk() {
   const reports = useReports()
   const resources = useResources()
   const shelters = useShelters()
+  const riskZones = useRiskZones()
   const online = useOnlineStatus()
 
   const setConnection = useUiStore((state) => state.setConnection)
@@ -48,8 +50,9 @@ export function OperationsDesk() {
       incidents: incidents.data ?? [],
       units: resources.data ?? [],
       shelters: shelters.data ?? [],
+      riskZones: riskZones.data ?? [],
     }),
-    [reports.data, incidents.data, resources.data, shelters.data],
+    [reports.data, incidents.data, resources.data, shelters.data, riskZones.data],
   )
 
   return (

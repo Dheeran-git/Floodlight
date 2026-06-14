@@ -126,11 +126,22 @@ export async function flushQueue(): Promise<FlushResult> {
         latitude: report.latitude,
         longitude: report.longitude,
       })
-      if (report.id !== undefined) await removeReport(report.id)
-      flushed += 1
     } catch {
+      // POST failed — still offline / server error. Keep this and the rest
+      // queued and stop; they'll retry on the next flush.
       break
     }
+    // The report was delivered. Removal is best-effort and intentionally
+    // separate: a delete failure must not be mistaken for an offline error,
+    // nor stop the flush, nor re-POST a report the server already accepted.
+    if (report.id !== undefined) {
+      try {
+        await removeReport(report.id)
+      } catch {
+        // Leave it; a later flush reconciles. Avoids halting on a storage hiccup.
+      }
+    }
+    flushed += 1
   }
   const remaining = await countQueuedReports()
   return { flushed, remaining }

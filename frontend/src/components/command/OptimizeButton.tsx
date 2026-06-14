@@ -3,8 +3,8 @@ import { useOptimization } from '@/hooks'
 /** Button that runs the resource optimizer and shows an assignment summary. */
 export function OptimizeButton() {
   const mutation = useOptimization()
-  const count = Array.isArray(mutation.data?.assignments)
-    ? mutation.data.assignments.length
+  const count = Array.isArray(mutation.data?.deployment_plan)
+    ? mutation.data.deployment_plan.length
     : null
 
   return (
