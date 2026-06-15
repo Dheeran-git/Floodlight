@@ -10,6 +10,7 @@ import { ShelterList } from '@/components/shelters'
 import { Card, SidePanel } from '@/components/ui'
 import {
   useIncidents,
+  useLiveEvents,
   useOnlineStatus,
   useReports,
   useResources,
@@ -26,6 +27,8 @@ export function OperationsDesk() {
   const shelters = useShelters()
   const riskZones = useRiskZones()
   const online = useOnlineStatus()
+  // Refresh data in real time from the backend WebSocket event feed.
+  useLiveEvents()
 
   const setConnection = useUiStore((state) => state.setConnection)
   const leftCollapsed = useUiStore((state) => state.leftPanelCollapsed)

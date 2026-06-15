@@ -24,12 +24,17 @@ Phase 7 — ✅ COMPLETE in code (simulation + performance); demo/presentation a
 - **Wolfram integration**: `optimization/engine/wolfram.py` (Wolfram|Alpha
   client + logistic risk model) drives prediction escalation; falls back to a
   local model without `WOLFRAM_APP_ID`.
-- **Tests (176 automated)**: backend pytest **70** (unit/integration/E2E),
+- **Real-time**: the frontend connects to the backend `/ws` feed
+  (`services/websocket` + `useLiveEvents`); events invalidate the affected
+  queries so the map/panels update live (Vite proxies the WS upgrade).
+- **Tests (185 automated)**: backend pytest **70** (unit/integration/E2E),
   optimization pytest **26** (graph/routing/allocation/wolfram), frontend
-  **Vitest 80** (components/hooks/stores/offline). All green.
+  **Vitest 86** (components/hooks/stores/offline/websocket), **Playwright 3**
+  full-stack browser E2E (`frontend/e2e`, `npm run e2e`). All green.
 - **Smoke**: `scripts/smoke.sh` — 12 endpoints + WebSocket against a live server.
 - **CI**: `.github/workflows/ci.yml` runs backend (ruff + alembic + pytest),
-  optimization (ruff + pytest), and frontend (eslint + tsc + vitest + build).
+  optimization (ruff + pytest), frontend (eslint + tsc + vitest + build), and a
+  full-stack Playwright E2E job.
 - **Reviewed & hardened**: a `/code-review` + `/simplify` pass fixed a P0
   allocation inversion, unbounded route growth, a priority-lowering fusion bug,
   an import-time DB-session leak, an offline duplicate-submission risk, a
