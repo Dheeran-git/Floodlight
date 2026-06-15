@@ -1,0 +1,45 @@
+# Render Blueprint — deploys the Floodlight FastAPI backend + a managed
+# PostgreSQL database. The frontend is deployed separately on Vercel
+# (see DEPLOYMENT.md). Render auto-detects this file when you create a
+# "Blueprint" from the repo.
+
+databases:
+  - name: floodlight-db
+    plan: free
+    databaseName: floodlight
+    user: floodlight
+
+services:
+  - type: web
+    name: floodlight-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    # Editable install so app/utils/engine.py can still locate the sibling
+    # optimization/ package via the repo root on sys.path.
+    buildCommand: pip install -e .
+    # Migrate + seed (both idempotent) before serving. Render injects $PORT.
+    startCommand: alembic upgrade head && python -m app.utils.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: floodlight-db
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      # Comma-separated list of allowed frontend origins. Set to your Vercel
+      # URL after the frontend is deployed, e.g. https://floodlight.vercel.app
+      - key: CORS_ORIGINS
+        sync: false
+      # Optional — leave unset to use the deterministic rule-based fallbacks.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: WOLFRAM_APP_ID
+        sync: false

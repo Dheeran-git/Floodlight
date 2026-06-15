@@ -5,7 +5,10 @@
  * go through this module — no hardcoded endpoints elsewhere.
  */
 
-const API_BASE_URL = '/api/v1'
+// Dev: stays relative ('/api/v1') and Vite proxies it to localhost:8000.
+// Prod: set VITE_API_URL to the deployed backend including the path, e.g.
+//   VITE_API_URL=https://floodlight-api.onrender.com/api/v1
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1'
 
 /**
  * Typed fetch wrapper for the Floodlight API.

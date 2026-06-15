@@ -20,8 +20,21 @@ export interface EventFeed {
 
 const MAX_BACKOFF_MS = 15_000
 
-/** Build the ws(s):// URL for the event feed from the current origin. */
+/**
+ * Build the ws(s):// URL for the event feed.
+ *
+ * In production VITE_API_URL points at the backend on a different origin
+ * (e.g. Render), so the socket is derived from it. With no/relative
+ * VITE_API_URL (dev), it falls back to the current origin, which Vite proxies.
+ */
 export function eventFeedUrl(): string {
+  const apiBase = import.meta.env.VITE_API_URL
+  if (apiBase && /^https?:\/\//i.test(apiBase)) {
+    const url = new URL(apiBase)
+    const protocol = url.protocol === 'https:' ? 'wss' : 'ws'
+    const path = url.pathname.replace(/\/$/, '')
+    return `${protocol}://${url.host}${path}/ws`
+  }
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
   return `${protocol}://${window.location.host}/api/v1/ws`
 }
