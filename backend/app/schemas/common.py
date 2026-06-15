@@ -5,14 +5,11 @@ Standardized API response wrapper per CLAUDE.md specification:
 """
 
 from datetime import datetime
-from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, Field
 
-T = TypeVar("T")
 
-
-class APIResponse(BaseModel, Generic[T]):
+class APIResponse[T](BaseModel):
     """Standard API response wrapper.
 
     All API responses follow this structure per CLAUDE.md:

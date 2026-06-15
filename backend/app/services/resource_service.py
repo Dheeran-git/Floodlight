@@ -8,6 +8,7 @@ import uuid
 
 from app.models.rescue_unit import RescueUnit
 from app.repositories.rescue_unit_repository import RescueUnitRepository
+from app.services.events import EVENT_RESOURCE_ASSIGNED, publish_event
 
 logger = logging.getLogger(__name__)
 
@@ -58,4 +59,9 @@ class ResourceService:
             resource_id,
             incident_id,
         )
+        publish_event(EVENT_RESOURCE_ASSIGNED, {
+            "unit_id": str(resource_id),
+            "incident_id": str(incident_id),
+            "status": unit.status,
+        })
         return True

@@ -1,28 +1,113 @@
 """Route optimization algorithms.
 
-Implements Dijkstra and A* pathfinding on the road network graph,
-avoiding flooded zones and prioritizing safe rescue routes.
-
-Implementation will be added in Phase 5.
+Implements A* pathfinding on the flood-aware road graph, minimizing edge
+weight (distance plus flood penalty) and reporting whether a route is safe.
 """
 
+from __future__ import annotations
 
-def find_safe_route() -> None:
-    """Find the safest route from a rescue unit to an incident.
+from dataclasses import dataclass
 
-    Uses weighted Dijkstra/A* on the flood-aware road graph,
-    prioritizing human life over shortest distance.
+import networkx as nx
 
-    TODO: Implement in Phase 5.
+from optimization.engine.graph import haversine_km
+
+
+@dataclass(frozen=True)
+class RouteResult:
+    """A computed route with geometry, distance, ETA, and safety flag."""
+
+    node_path: list[str]
+    coordinates: list[tuple[float, float]]  # (lat, lon) for each node on the path
+    distance_km: float  # sum of raw distance_km along the path
+    eta_minutes: int  # round(distance_km / speed_kmh * 60)
+    safe: bool  # False if any edge on the path has flooded=True
+
+
+def _heuristic(graph: nx.Graph):
+    """Admissible haversine heuristic (node -> target) in graph weight units (km).
+
+    NetworkX calls the heuristic as ``h(node, target)``.
     """
-    raise NotImplementedError("Route optimization will be implemented in Phase 5")
+
+    def h(node_id: str, target_id: str) -> float:
+        n = graph.nodes[node_id]
+        t = graph.nodes[target_id]
+        return haversine_km(n["lat"], n["lon"], t["lat"], t["lon"])
+
+    return h
 
 
-def find_evacuation_route() -> None:
-    """Find optimal evacuation route to the nearest shelter.
+def _build_result(graph: nx.Graph, path: list[str], speed_kmh: float) -> RouteResult:
+    """Assemble a RouteResult from a node path, summing raw distances."""
+    coordinates: list[tuple[float, float]] = [
+        (graph.nodes[n]["lat"], graph.nodes[n]["lon"]) for n in path
+    ]
+    distance_km = 0.0
+    safe = True
+    for u, v in zip(path[:-1], path[1:], strict=True):
+        edge = graph.edges[u, v]
+        distance_km += edge["distance_km"]
+        if edge.get("flooded", False):
+            safe = False
+    eta_minutes = round(distance_km / speed_kmh * 60) if speed_kmh > 0 else 0
+    return RouteResult(
+        node_path=path,
+        coordinates=coordinates,
+        distance_km=distance_km,
+        eta_minutes=eta_minutes,
+        safe=safe,
+    )
 
-    Considers shelter capacity, distance, and route safety.
 
-    TODO: Implement in Phase 5.
+def find_safe_route(
+    graph: nx.Graph,
+    source_id: str,
+    target_id: str,
+    speed_kmh: float = 30.0,
+) -> RouteResult | None:
+    """A* shortest path minimizing edge 'weight' with a haversine heuristic.
+
+    Returns None if either node is missing or no path exists.
     """
-    raise NotImplementedError("Evacuation routing will be implemented in Phase 5")
+    if source_id not in graph or target_id not in graph:
+        return None
+    try:
+        path = nx.astar_path(
+            graph,
+            source_id,
+            target_id,
+            heuristic=_heuristic(graph),
+            weight="weight",
+        )
+    except nx.NetworkXNoPath:
+        return None
+    return _build_result(graph, path, speed_kmh)
+
+
+def find_evacuation_route(
+    graph: nx.Graph,
+    source_id: str,
+    shelter_ids: list[str],
+    speed_kmh: float = 30.0,
+) -> RouteResult | None:
+    """Return the best route to a shelter, preferring safe over short.
+
+    Among reachable shelters, the nearest route that avoids flooding is
+    returned; only if no safe route exists is the nearest flooded route used
+    as a last resort.
+    """
+    if source_id not in graph:
+        return None
+    candidates: list[RouteResult] = []
+    for shelter_id in shelter_ids:
+        if shelter_id not in graph:
+            continue
+        route = find_safe_route(graph, source_id, shelter_id, speed_kmh)
+        if route is not None:
+            candidates.append(route)
+    if not candidates:
+        return None
+    safe_routes = [r for r in candidates if r.safe]
+    pool = safe_routes or candidates
+    return min(pool, key=lambda r: r.distance_km)

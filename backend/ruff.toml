@@ -1,10 +1,22 @@
+target-version = "py312"
+
 [lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "RUF"]
 ignore = ["E501"]
-target-version = "py312"
 
 [lint.isort]
 known-first-party = ["app"]
+
+[lint.flake8-bugbear]
+# FastAPI dependency-injection markers are called in argument defaults by design.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.File",
+    "fastapi.Form",
+    "fastapi.Query",
+    "fastapi.Body",
+    "fastapi.Path",
+]
 
 [format]
 quote-style = "double"

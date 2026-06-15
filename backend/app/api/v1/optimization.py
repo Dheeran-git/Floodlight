@@ -11,8 +11,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.optimization_run import OptimizationRun
-from app.repositories.base import BaseRepository
 from app.schemas.optimization import OptimizationResultResponse, OptimizationRunResponse
 from app.services.optimization_service import OptimizationService
 
@@ -21,9 +19,7 @@ router = APIRouter(prefix="/optimization", tags=["optimization"])
 
 def _get_service(db: Session = Depends(get_db)) -> OptimizationService:
     """Compose optimization service with its dependencies."""
-    return OptimizationService(
-        repository=BaseRepository(OptimizationRun, db)
-    )
+    return OptimizationService(db=db)
 
 
 @router.post("/run", response_model=OptimizationRunResponse)
