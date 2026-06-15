@@ -9,6 +9,20 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+# Force settings override for tests BEFORE importing database or main app
+import app.config
+
+_original_get_settings = app.config.get_settings
+
+def _mock_get_settings():
+    settings = _original_get_settings()
+    settings.DATABASE_URL = ""
+    settings.GEMINI_API_KEY = ""
+    settings.ELEVENLABS_API_KEY = ""
+    return settings
+
+app.config.get_settings = _mock_get_settings
+
 from app.database import Base, get_db
 from app.main import app
 from app.models.incident import Incident, IncidentReport

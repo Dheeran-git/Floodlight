@@ -397,12 +397,12 @@ Add any missing queries discovered during Phase 5 integration.
 The main feature phase is implemented end-to-end. AI features (triage, command)
 use Google Gemini when `GEMINI_API_KEY` is set and fall back to deterministic
 rule-based logic otherwise, so the whole pipeline runs and is verifiable without
-external keys. Voice transcription requires `WHISPER_API_KEY` (returns 503
+external keys. Voice transcription requires `ELEVENLABS_API_KEY` (returns 503
 otherwise); the live map requires `VITE_MAPBOX_TOKEN` (placeholder otherwise).
 
 **Delivered**
 - 5.1 Citizen reporting: report form (text + geolocation) → `POST /reports`;
-  voice endpoint `POST /reports/voice` (Whisper).
+  voice endpoint `POST /reports/voice` (ElevenLabs).
 - 5.2 AI triage: severity/credibility/category + reasoning
   (`app/services/triage/`); GPS-proximity incident fusion (<500m).
 - 5.3 Optimization engine: NetworkX flood-aware routing + SciPy min-cost
@@ -428,7 +428,7 @@ Build the report submission UI:
 
 - Text input for report description
 - GPS capture (browser geolocation API)
-- Voice recording + Whisper transcription
+- Voice recording + ElevenLabs transcription
 - Offline queue (IndexedDB + Service Workers)
 - Submit button → `POST /api/v1/reports`
 
@@ -439,7 +439,7 @@ Build the report submission UI:
 The `POST /reports` endpoint already works. Add:
 
 - Voice upload endpoint (multipart form)
-- Whisper STT integration
+- ElevenLabs STT integration
 - Trigger AI triage after report creation
 
 **Where to code:** `backend/app/api/v1/reports.py`, `backend/app/services/report_service.py`
@@ -486,12 +486,12 @@ Merge duplicate reports into incidents:
 
 **Where to code:** `backend/app/services/triage/`
 
-### Whisper Integration
+### ElevenLabs Integration
 
 ```python
 # backend/app/services/triage/transcription.py
 # - Accept audio file
-# - Send to Whisper API
+# - Send to ElevenLabs API
 # - Return transcribed text
 ```
 
@@ -661,7 +661,7 @@ optimization_complete
 ## Phase 5 Acceptance Criteria
 
 - [x] Citizen can submit text report → appears on map
-- [x] Voice report is transcribed and triaged (endpoint live; needs `WHISPER_API_KEY`)
+- [x] Voice report is transcribed and triaged (endpoint live; needs `ELEVENLABS_API_KEY`)
 - [x] AI assigns severity (P0-P3) with reasoning
 - [x] Duplicate reports merge into single incident
 - [x] Map shows all entities (incidents, units, shelters, routes, risk zones)
@@ -757,7 +757,7 @@ npm run dev
 
 ```
 GEMINI_API_KEY=        # Member 1 needs this
-WHISPER_API_KEY=       # Member 1 needs this
+ELEVENLABS_API_KEY=    # Member 1 needs this
 MAPBOX_TOKEN=          # Member 3 needs this
 WOLFRAM_APP_ID=        # Member 2 needs this
 DATABASE_URL=          # Member 4 for PostgreSQL
@@ -781,7 +781,7 @@ DATABASE_URL=          # Member 4 for PostgreSQL
 | Day | Focus | Status |
 |-----|-------|--------|
 | Day 1 | Project setup, backend skeleton, frontend skeleton | ✅ DONE |
-| Day 2 | Citizen reporting, Whisper, Gemini triage, report storage | 🔲 |
+| Day 2 | Citizen reporting, ElevenLabs, Gemini triage, report storage | 🔲 |
 | Day 3 | Incident fusion, live map, WebSockets, severity visualization | 🔲 |
 | Day 4 | Optimization engine, NetworkX, route planning, resource assignment | 🔲 |
 | Day 5 | Wolfram integration, risk scoring, shelter prediction, escalation | 🔲 |

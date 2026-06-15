@@ -53,8 +53,8 @@ Response
 POST /reports/voice
 
 Create a report from a voice recording (multipart form). Transcribes the audio
-via Whisper, then runs the same triage pipeline. Returns 503 if
-`WHISPER_API_KEY` is not configured, 413 if the upload exceeds 25 MB.
+via ElevenLabs, then runs the same triage pipeline. Returns 503 if
+`ELEVENLABS_API_KEY` is not configured, 413 if the upload exceeds 25 MB.
 
 Form fields: `latitude`, `longitude`, `audio` (file)
 

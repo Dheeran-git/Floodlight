@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Buttons" subtitle="Primary, secondary, critical, link" viewport="700x130" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { padding: 26px; display:flex; gap: 14px; align-items:center; flex-wrap: wrap; }
+  .btn { height: 42px; padding: 0 20px; border-radius: 3px; font-family: var(--font-ui); font-weight: 600; font-size: 14px; border: 1px solid transparent; cursor: pointer; display:inline-flex; align-items:center; }
+  .primary { background: var(--accent); color: #fff; }
+  .secondary { background: var(--paper); border-color: var(--ink); color: var(--ink); }
+  .critical { background: var(--emphasis); color: #fff; }
+  .link { background: none; border: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; padding: 0; font-size: 14px; font-weight: 500; }
+  .lab { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-top: 6px; }
+  .grp { display:flex; flex-direction:column; align-items:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grp"><button class="btn primary">Dispatch team</button><div class="lab">primary</div></div>
+  <div class="grp"><button class="btn secondary">Mark cleared</button><div class="lab">secondary</div></div>
+  <div class="grp"><button class="btn critical">SOS Dispatch</button><div class="lab">critical</div></div>
+  <div class="grp"><button class="link">View report</button><div class="lab">link / tertiary</div></div>
+</div>
+</body>
+</html>

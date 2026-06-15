@@ -1,1 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500;1,6..72,600&family=Libre+Franklin:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+  /* ---------- PAPER & SURFACES (warm broadsheet stock) ---------- */
+  --color-paper: #F6F3EC;
+  --color-paper-raised: #FBFAF5;
+  --color-card: #FFFFFF;
+
+  /* ---------- INK (text) ---------- */
+  --color-ink: #16140F;
+  --color-ink-2: #3A362E;
+  --color-ink-3: #6B655A;
+  --color-ink-4: #9A9384;
+
+  /* ---------- RULES (the newspaper signature) ---------- */
+  --color-rule: #16140F;
+  --color-rule-soft: #DAD4C6;
+
+  /* ---------- ACCENT — ink-blue (links + interactive only) ---------- */
+  --color-accent: #1B3FA0;
+  --color-accent-press: #142F7A;
+  --color-accent-tint: rgba(27, 63, 160, 0.08);
+
+  /* ---------- EMPHASIS — vermillion (pull-stats, urgency only) ---------- */
+  --color-emphasis: #CC3B2B;
+  --color-emphasis-tint: rgba(204, 59, 43, 0.08);
+
+  /* ---------- SEMANTIC / SEVERITY (muted infographic tones) ---------- */
+  --color-sev-critical: #CC3B2B;
+  --color-sev-high: #C9711B;
+  --color-sev-moderate: #B0860F;
+  --color-sev-stable: #2E7D5B;
+  --color-sev-info: #1B3FA0;
+
+  /* ---------- MAP / DATA-VIZ (muted blue depth ramp) ---------- */
+  --color-flood-1: #CBD7EE;
+  --color-flood-2: #93AEDC;
+  --color-flood-3: #5C84C8;
+  --color-flood-4: #2A4FA0;
+  --color-route: #1B3FA0;
+  --color-blocked: #CC3B2B;
+  --color-marker-team: #C9711B;
+  --color-marker-shelter: #2E7D5B;
+
+  /* ---------- UNIT TEST COMPATIBILITY MAPPINGS ---------- */
+  --color-red-500: #CC3B2B;
+  --color-orange-500: #C9711B;
+  --color-yellow-400: #B0860F;
+  --color-blue-500: #2E7D5B;
+  --color-green-500: #2E7D5B;
+  --color-amber-500: #C9711B;
+  --color-cyan-400: #1B3FA0;
+  --color-gray-400: #6B655A;
+  --color-green-400: #2E7D5B;
+  --color-amber-400: #C9711B;
+  --color-gray-500: #6B655A;
+  --color-red-400: #CC3B2B;
+  --color-red-300: #CC3B2B;
+  --color-orange-300: #C9711B;
+  --color-yellow-300: #B0860F;
+  --color-blue-300: #2E7D5B;
+
+  /* ---------- TYPE FAMILIES ---------- */
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-ui: 'Libre Franklin', Helvetica, Arial, sans-serif;
+  --font-mono: 'Spline Sans Mono', ui-monospace, monospace;
+
+  /* ---------- SPACING (8px system, 4px sub-step) ---------- */
+  --spacing-sp-1: 4px;
+  --spacing-sp-2: 8px;
+  --spacing-sp-3: 12px;
+  --spacing-sp-4: 16px;
+  --spacing-sp-5: 20px;
+  --spacing-sp-6: 24px;
+  --spacing-sp-8: 32px;
+  --spacing-sp-10: 40px;
+  --spacing-sp-12: 48px;
+  --spacing-sp-16: 64px;
+  --spacing-sp-20: 80px;
+  --spacing-sp-24: 96px;
+
+  /* ---------- RADII (print, not a toy — square-ish) ---------- */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-tag: 2px;
+
+  /* ---------- ELEVATION ---------- */
+  --shadow-elev-card: 0 0 0 1px var(--color-rule-soft);
+  --shadow-elev-pop: 0 14px 36px -16px rgba(20,18,15,0.22);
+  --shadow-elev-sticky: 0 1px 0 var(--color-rule);
+}
+
+/* Base settings */
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  transition: background-color 160ms, color 160ms;
+}
+
+::selection {
+  background: rgba(27, 63, 160, 0.16);
+}
+
+/* ---------- Mapbox canvas styling ---------- */
+.paper-map {
+  background-color: var(--color-paper) !important;
+}
+.paper-map .mapboxgl-canvas {
+  filter: grayscale(1) brightness(1.04) contrast(0.9) sepia(0.34) saturate(0.7) hue-rotate(-8deg);
+}
+/* For dark theme maps */
+[data-theme="dark"] .paper-map .mapboxgl-canvas {
+  filter: invert(0.9) grayscale(1) brightness(0.6) contrast(1.2) sepia(0.25) saturate(0.6) hue-rotate(170deg);
+}
+
+/* ---------- DARK OVERRIDE — dim projection rooms only ---------- */
+[data-theme="dark"] {
+  --color-paper: #15140F;
+  --color-paper-raised: #1D1B15;
+  --color-card: #211F18;
+  --color-ink: #F3EEE1;
+  --color-ink-2: #CDC6B5;
+  --color-ink-3: #978F7E;
+  --color-ink-4: #6A6354;
+  --color-rule: #F3EEE1;
+  --color-rule-soft: #34312A;
+  --color-accent: #8FB0FF;
+  --color-accent-press: #B7CCFF;
+  --color-accent-tint: rgba(143, 176, 255, 0.12);
+  --color-emphasis: #FF6A55;
+  --color-emphasis-tint: rgba(255, 106, 85, 0.12);
+  
+  --color-red-500: #FF6A55;
+  --color-orange-500: #C9711B;
+  --color-yellow-400: #B0860F;
+  --color-blue-500: #2E7D5B;
+  --color-green-500: #2E7D5B;
+  --color-amber-500: #C9711B;
+  --color-cyan-400: #8FB0FF;
+  --color-gray-400: #978F7E;
+  --color-green-400: #2E7D5B;
+  --color-amber-400: #C9711B;
+  --color-gray-500: #978F7E;
+  --color-red-400: #FF6A55;
+  --color-red-300: #FF6A55;
+  --color-orange-300: #C9711B;
+  --color-yellow-300: #B0860F;
+  --color-blue-300: #2E7D5B;
+}
+
+/* Typography styles */
+.fl-pull-stat {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 64px;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-emphasis);
+}
+
+.fl-display-xl {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 52px;
+  letter-spacing: -0.01em;
+  line-height: 1.04;
+  color: var(--color-ink);
+}
+
+.fl-display-l {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 38px;
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+  color: var(--color-ink);
+}
+
+.fl-h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--color-ink);
+}
+
+.fl-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 23px;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+
+.fl-h3 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.fl-body-lg {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-ink-2);
+}
+
+.fl-body {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-2);
+}
+
+.fl-small {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-ink-3);
+}
+
+.fl-kicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+.fl-data {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-2);
+}
+
+.fl-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+.fl-link:hover {
+  color: var(--color-accent-press);
+}
+
+.fl-dropcap::first-letter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.82;
+  padding: 6px 8px 0 0;
+  color: var(--color-ink);
+}

@@ -8,7 +8,7 @@ interface SidePanelProps {
   children: ReactNode
 }
 
-/** Collapsible side panel shell anchored to the left or right of the map. */
+/** Collapsible side panel shell styled with a broadsheet layout. */
 export function SidePanel({
   title,
   side = 'right',
@@ -19,18 +19,29 @@ export function SidePanel({
   const border = side === 'right' ? 'border-l' : 'border-r'
   return (
     <aside
-      className={`flex h-full flex-col bg-gray-950/80 ${border} border-gray-800 transition-all duration-200 ${collapsed ? 'w-12' : 'w-80'}`}
+      className={`flex h-full flex-col bg-paper-raised ${border} border-rule transition-all duration-160 ease-[cubic-bezier(0.2,0,0,1)] ${
+        collapsed ? 'w-12' : 'w-[360px]'
+      }`}
     >
       <button
         type="button"
         onClick={onToggle}
-        className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-200 hover:bg-gray-800/60"
+        className="flex items-center justify-between px-4 py-3 border-b border-rule-soft hover:bg-accent-tint transition-colors text-left cursor-pointer"
       >
-        {!collapsed && <span>{title}</span>}
-        <span className="text-gray-500">{collapsed ? '⟨' : '⟩'}</span>
+        {!collapsed && (
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-ink">
+            {title}
+          </span>
+        )}
+        {collapsed && (
+          <span className="font-mono text-[11px] font-semibold uppercase text-ink-3 mx-auto">
+            {title.slice(0, 3)}
+          </span>
+        )}
+        <span className="font-mono text-[11px] text-ink-3">{collapsed ? '▶' : '◀'}</span>
       </button>
       {!collapsed && (
-        <div className="flex-1 space-y-3 overflow-y-auto p-3">{children}</div>
+        <div className="flex-1 space-y-5 overflow-y-auto p-4">{children}</div>
       )}
     </aside>
   )

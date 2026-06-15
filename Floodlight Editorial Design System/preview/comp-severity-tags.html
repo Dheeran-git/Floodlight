@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Severity tags" subtitle="Newspaper labels with colored tick" viewport="700x110" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { padding: 26px; display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+  .tag { font-family: var(--font-mono); font-weight: 500; font-size: 11px; letter-spacing: 0.05em; border-radius: 2px; padding: 4px 8px 4px 7px; display:inline-flex; align-items:center; gap: 6px; }
+  .tick { width: 3px; align-self: stretch; border-radius: 1px; }
+  .t-crit { background: rgba(204,59,43,0.08); color:#CC3B2B; }
+  .t-high { background: rgba(201,113,27,0.10); color:#C9711B; }
+  .t-mod  { background: rgba(176,134,15,0.10); color:#B0860F; }
+  .t-stab { background: rgba(46,125,91,0.10); color:#2E7D5B; }
+  .t-info { background: rgba(27,63,160,0.08); color:#1B3FA0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag t-crit"><span class="tick" style="background:#CC3B2B;"></span>P0 SOS</span>
+  <span class="tag t-high"><span class="tick" style="background:#C9711B;"></span>P1 URGENT</span>
+  <span class="tag t-mod"><span class="tick" style="background:#B0860F;"></span>P2 WATCH</span>
+  <span class="tag t-stab"><span class="tick" style="background:#2E7D5B;"></span>STABLE</span>
+  <span class="tag t-stab"><span class="tick" style="background:#2E7D5B;"></span>CLEARED</span>
+  <span class="tag t-info"><span class="tick" style="background:#1B3FA0;"></span>INFO</span>
+</div>
+</body>
+</html>

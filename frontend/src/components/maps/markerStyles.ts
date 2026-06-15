@@ -60,7 +60,7 @@ export function createRiskZone(colorClass: string): HTMLDivElement {
   return el
 }
 
-/** Build popup HTML for a key/value summary (values are escaped). */
+/** Build popup HTML for a key/value summary in broadsheet styling (values are escaped). */
 export function popupHtml(title: string, rows: Array<[string, string]>): string {
   const escape = (s: string) =>
     s.replace(/[&<>"]/g, (c) => {
@@ -75,12 +75,16 @@ export function popupHtml(title: string, rows: Array<[string, string]>): string 
   const body = rows
     .map(
       ([k, v]) =>
-        `<div style="display:flex;gap:6px"><span style="color:#9ca3af">${escape(
-          k,
-        )}</span><span style="color:#e5e7eb">${escape(v)}</span></div>`,
+        `<div style="display:flex;gap:8px;font-family:'Spline Sans Mono',monospace;font-size:10.5px;margin-bottom:3px;white-space:nowrap">` +
+        `<span style="color:#6B655A;text-transform:uppercase">${escape(k)} —</span>` +
+        `<span style="color:#16140F;font-weight:500">${escape(v)}</span>` +
+        `</div>`,
     )
     .join('')
-  return `<div style="font-size:12px;min-width:140px"><div style="font-weight:600;color:#f3f4f6;margin-bottom:4px">${escape(
-    title,
-  )}</div>${body}</div>`
+  return (
+    `<div style="font-family:'Libre Franklin',sans-serif;color:#16140F;padding:4px;min-width:165px;background:#F6F3EC;border:1px solid #16140F;border-radius:2px;box-shadow:0 4px 12px rgba(20,18,15,0.08)">` +
+    `<div style="font-family:'Newsreader',serif;font-weight:600;font-size:14.5px;color:#16140F;border-bottom:1px solid #16140F;padding-bottom:4px;margin-bottom:6px">${escape(title)}</div>` +
+    `<div>${body}</div>` +
+    `</div>`
+  )
 }

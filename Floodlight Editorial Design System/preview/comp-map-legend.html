@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Components" name="Map & legend" subtitle="Printed-infographic basemap with boxed mono legend" viewport="700x170" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { padding: 22px 26px; display:flex; gap: 20px; align-items:stretch; }
+  .map { flex: 1; position: relative; background: var(--paper-raised); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; min-height: 110px; }
+  .zone { position:absolute; opacity: 0.7; }
+  .road { position:absolute; height: 1px; background: var(--ink-3); }
+  .legend { width: 168px; border: 1px solid var(--rule); border-radius: 3px; padding: 12px; background: var(--card); }
+  .lh { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding-bottom: 8px; border-bottom: 1px solid var(--rule-soft); margin-bottom: 9px; }
+  .li { display:flex; align-items:center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); margin-bottom: 7px; }
+  .sw { width: 14px; height: 10px; border-radius: 1px; }
+  .ln { width: 16px; border-top: 2px solid; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="map">
+    <div class="zone" style="left:0; top:0; width:62%; height:70%; background:#93AEDC;"></div>
+    <div class="zone" style="left:0; top:0; width:38%; height:48%; background:#2A4FA0;"></div>
+    <div class="zone" style="right:0; bottom:0; width:46%; height:42%; background:#CBD7EE;"></div>
+    <div class="road" style="left:8%; top:55%; width:84%;"></div>
+    <div class="road" style="left:30%; top:10%; width:1px; height:80%; transform:rotate(8deg);"></div>
+    <div style="position:absolute; left:46%; top:52%; width:40%; border-top:2px solid #1B3FA0;"></div>
+    <div style="position:absolute; left:12%; top:30%; width:30%; border-top:2px dashed #CC3B2B;"></div>
+  </div>
+  <div class="legend">
+    <div class="lh">Legend</div>
+    <div class="li"><span class="sw" style="background:#2A4FA0;"></span>Deep / inundated</div>
+    <div class="li"><span class="sw" style="background:#93AEDC;"></span>Shallow</div>
+    <div class="li"><span class="ln" style="border-color:#1B3FA0;"></span>Rescue route</div>
+    <div class="li"><span class="ln" style="border-top:2px dashed #CC3B2B;"></span>Blocked road</div>
+    <div class="li"><span class="sw" style="width:4px; background:#C9711B;"></span>Team · <span class="sw" style="width:4px; background:#2E7D5B;"></span>Shelter</div>
+  </div>
+</div>
+</body>
+</html>

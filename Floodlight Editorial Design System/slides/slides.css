@@ -1,0 +1,48 @@
+/* Floodlight Editorial — deck styles (1280×720 canvas) */
+
+deck-stage:not(:defined) { visibility: hidden; }
+deck-stage { background: #2A2823; }
+
+.slide {
+  width: 1280px; height: 720px; box-sizing: border-box;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-ui);
+  padding: 56px 72px 64px;
+  position: relative; overflow: hidden;
+}
+
+/* running chrome */
+.chrome { position: absolute; top: 28px; left: 72px; right: 72px; display: flex; align-items: center; justify-content: space-between; }
+.runhead { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.counter { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; color: var(--ink-3); }
+
+.kicker { font-family: var(--font-mono); font-size: 13px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.dateline { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--ink-2); }
+
+.headline { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.rule { height: 1px; background: var(--rule); border: 0; }
+.rule-3 { height: 3px; background: var(--ink); border: 0; }
+
+.body { font-family: var(--font-ui); font-weight: 400; font-size: 20px; line-height: 1.6; color: var(--ink-2); }
+.serif { font-family: var(--font-display); }
+.mono { font-family: var(--font-mono); }
+.emph { color: var(--emphasis); }
+.accent { color: var(--accent); }
+a, .link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+.dropcap::first-letter {
+  font-family: var(--font-display); font-weight: 600; float: left;
+  font-size: 5.2em; line-height: 0.78; padding: 8px 14px 0 0; color: var(--ink);
+}
+
+.pull-stat { font-family: var(--font-display); font-weight: 600; font-size: 116px; line-height: 0.94; letter-spacing: -0.02em; color: var(--emphasis); font-variant-numeric: tabular-nums; }
+
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.05em; padding: 3px 8px; border-radius: 2px; }
+.tag .tick { width: 3px; height: 12px; border-radius: 1px; }
+
+table.data { width: 100%; border-collapse: collapse; }
+table.data th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--rule); font-weight: 500; }
+table.data th.r, table.data td.r { text-align: right; }
+table.data td { font-family: var(--font-ui); font-size: 18px; color: var(--ink-2); padding: 12px 0; border-bottom: 1px solid var(--rule-soft); }
+table.data td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+table.data .tk { display: inline-block; width: 9px; height: 9px; border-radius: 1px; margin-right: 10px; vertical-align: middle; }

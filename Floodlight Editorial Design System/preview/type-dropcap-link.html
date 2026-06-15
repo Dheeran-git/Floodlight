@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Type" name="Drop cap & links" subtitle="Lead narrative drop cap, ink-blue links, vermillion emphasis" viewport="700x170" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { padding: 22px 26px; display:flex; gap: 28px; align-items: flex-start; }
+  .col { flex: 1; }
+  .meta { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); letter-spacing: 0.06em; text-transform:uppercase; margin-bottom: 8px; }
+  .para { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+  .para::first-letter {
+    font-family: var(--font-display); font-weight: 600; float: left;
+    font-size: 56px; line-height: 0.82; padding: 5px 8px 0 0; color: var(--ink);
+  }
+  .links { font-size: 15px; line-height: 1.9; color: var(--ink-2); }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="col">
+    <div class="meta">Drop cap · lead narrative</div>
+    <p class="para">Bengaluru floods every monsoon, and each year the maps arrive too late. Floodlight reads the water before the dispatch desk can.</p>
+  </div>
+  <div class="col">
+    <div class="meta">Link &amp; emphasis</div>
+    <div class="links">
+      Read the <a href="#">full situation report</a>.<br>
+      Casualties down <strong style="color:#CC3B2B; font-family:var(--font-display);">38%</strong> year on year.<br>
+      <a href="#">View queued reports →</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""Voice transcription via Whisper, with graceful no-key degradation."""
+"""Voice transcription via ElevenLabs, with graceful no-key degradation."""
 
 import logging
 
@@ -8,17 +8,17 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
-_WHISPER_URL = "https://api.openai.com/v1/audio/transcriptions"
+_ELEVENLABS_URL = "https://api.elevenlabs.io/v1/speech-to-text"
 _TIMEOUT_SECONDS = 60.0
 
 
 def transcription_available() -> bool:
-    """Return True if a Whisper API key is configured."""
-    return bool(get_settings().WHISPER_API_KEY)
+    """Return True if an ElevenLabs API key is configured."""
+    return bool(get_settings().ELEVENLABS_API_KEY)
 
 
 def transcribe(audio: bytes, filename: str = "audio.webm") -> str | None:
-    """Transcribe audio bytes to text using Whisper.
+    """Transcribe audio bytes to text using ElevenLabs Speech-to-Text.
 
     Args:
         audio: Raw audio file bytes.
@@ -28,18 +28,18 @@ def transcribe(audio: bytes, filename: str = "audio.webm") -> str | None:
         The transcript, or None if no key is configured or the call fails.
     """
     settings = get_settings()
-    if not settings.WHISPER_API_KEY:
+    if not settings.ELEVENLABS_API_KEY:
         return None
     try:
         response = httpx.post(
-            _WHISPER_URL,
-            headers={"Authorization": f"Bearer {settings.WHISPER_API_KEY}"},
+            _ELEVENLABS_URL,
+            headers={"xi-api-key": settings.ELEVENLABS_API_KEY},
             files={"file": (filename, audio)},
-            data={"model": "whisper-1"},
+            data={"model_id": "scribe_v2"},
             timeout=_TIMEOUT_SECONDS,
         )
         response.raise_for_status()
         return response.json().get("text")
     except (httpx.HTTPError, KeyError) as exc:
-        logger.warning("Whisper transcription failed: %s", exc)
+        logger.warning("ElevenLabs transcription failed: %s", exc)
         return None

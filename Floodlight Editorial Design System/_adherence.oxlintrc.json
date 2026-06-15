@@ -1,0 +1,172 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "slides/**",
+              "ui_kits/citizen-reporter/**",
+              "ui_kits/command-desk/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Newsreader|Libre Franklin|Spline Sans Mono))/i]",
+        "message": "Font not provided by the design system. Available: Newsreader, Libre Franklin, Spline Sans Mono."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [
+      "--accent",
+      "--accent-press",
+      "--accent-tint",
+      "--blocked",
+      "--card",
+      "--ease",
+      "--elev-card",
+      "--elev-pop",
+      "--elev-sticky",
+      "--emphasis",
+      "--emphasis-tint",
+      "--flood-1",
+      "--flood-2",
+      "--flood-3",
+      "--flood-4",
+      "--font-display",
+      "--font-mono",
+      "--font-ui",
+      "--ink",
+      "--ink-2",
+      "--ink-3",
+      "--ink-4",
+      "--marker-shelter",
+      "--marker-team",
+      "--paper",
+      "--paper-raised",
+      "--radius-md",
+      "--radius-sm",
+      "--radius-tag",
+      "--radius-xs",
+      "--route",
+      "--rule",
+      "--rule-soft",
+      "--scrim",
+      "--sev-critical",
+      "--sev-high",
+      "--sev-info",
+      "--sev-moderate",
+      "--sev-stable",
+      "--sp-1",
+      "--sp-10",
+      "--sp-12",
+      "--sp-16",
+      "--sp-2",
+      "--sp-20",
+      "--sp-24",
+      "--sp-3",
+      "--sp-4",
+      "--sp-5",
+      "--sp-6",
+      "--sp-8",
+      "--t-base",
+      "--t-fast"
+    ],
+    "tokenKinds": {
+      "--paper": "color",
+      "--paper-raised": "color",
+      "--card": "color",
+      "--ink": "color",
+      "--ink-2": "color",
+      "--ink-3": "color",
+      "--ink-4": "color",
+      "--rule": "color",
+      "--rule-soft": "color",
+      "--accent": "color",
+      "--accent-press": "color",
+      "--accent-tint": "color",
+      "--emphasis": "color",
+      "--emphasis-tint": "color",
+      "--sev-critical": "color",
+      "--sev-high": "color",
+      "--sev-moderate": "color",
+      "--sev-stable": "color",
+      "--sev-info": "color",
+      "--flood-1": "color",
+      "--flood-2": "color",
+      "--flood-3": "color",
+      "--flood-4": "color",
+      "--route": "color",
+      "--blocked": "color",
+      "--marker-team": "color",
+      "--marker-shelter": "color",
+      "--font-display": "font",
+      "--font-ui": "font",
+      "--font-mono": "font",
+      "--sp-1": "spacing",
+      "--sp-2": "spacing",
+      "--sp-3": "spacing",
+      "--sp-4": "spacing",
+      "--sp-5": "spacing",
+      "--sp-6": "spacing",
+      "--sp-8": "spacing",
+      "--sp-10": "spacing",
+      "--sp-12": "spacing",
+      "--sp-16": "spacing",
+      "--sp-20": "spacing",
+      "--sp-24": "spacing",
+      "--radius-xs": "radius",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-tag": "radius",
+      "--elev-card": "shadow",
+      "--elev-pop": "shadow",
+      "--elev-sticky": "shadow",
+      "--scrim": "color",
+      "--t-fast": "other",
+      "--t-base": "other",
+      "--ease": "other"
+    },
+    "fontFamilies": [
+      "Libre Franklin",
+      "Newsreader",
+      "Spline Sans Mono"
+    ]
+  }
+}

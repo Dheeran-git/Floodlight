@@ -29,8 +29,8 @@ class Settings(BaseSettings):
 
     # AI Services
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-1.5-flash"
-    WHISPER_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    ELEVENLABS_API_KEY: str = ""
 
     # Mapping
     MAPBOX_TOKEN: str = ""

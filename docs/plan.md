@@ -111,7 +111,7 @@ Engine  Engine      Engine
  ▼         ▼         ▼
 
 Gemini   PostgreSQL Wolfram
-Whisper  Redis      NetworkX
+ElevenLabs Redis      NetworkX
 
            │
            ▼
@@ -176,7 +176,7 @@ Used For:
 
 ---
 
-Whisper
+ElevenLabs
 
 Used For:
 
@@ -812,7 +812,7 @@ MEMBER 1
 
 AI/NLP
 
-Whisper
+ElevenLabs
 
 Gemini
 
@@ -884,7 +884,7 @@ DAY 2
 
 Citizen Reporting
 
-Whisper Integration
+ElevenLabs Integration
 
 Gemini Triage
 

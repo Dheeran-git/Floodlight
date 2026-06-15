@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
 import { CommandPanel, OptimizeButton, SimulationButton } from '@/components/command'
-import { DashboardShell, DegradedBanner } from '@/components/dashboard'
+import { DashboardShell, DegradedBanner, StatStrip } from '@/components/dashboard'
 import { IncidentList } from '@/components/incidents'
 import { LazyMap, MapLegend } from '@/components/maps'
 import type { MapData } from '@/components/maps'
@@ -78,9 +78,16 @@ export function OperationsDesk() {
           />
         </SidePanel>
 
-        <div className="relative flex-1">
-          <LazyMap data={mapData} />
-          <MapLegend />
+        <div className="relative flex-1 flex flex-col min-w-0">
+          <StatStrip
+            incidents={incidents.data ?? []}
+            units={resources.data ?? []}
+            shelters={shelters.data ?? []}
+          />
+          <div className="relative flex-1">
+            <LazyMap data={mapData} />
+            <MapLegend />
+          </div>
         </div>
 
         <SidePanel

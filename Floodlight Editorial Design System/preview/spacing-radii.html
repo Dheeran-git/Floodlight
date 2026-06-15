@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!-- @dsCard group="Spacing" name="Corner radii" subtitle="Square-ish — 2/3/4px, print not toy" viewport="700x180" -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-ui); }
+  .wrap { padding: 24px 26px; display:flex; gap: 20px; }
+  .tok { flex: 1; display:flex; flex-direction:column; align-items:center; gap: 10px; }
+  .box { width: 70px; height: 70px; background: var(--card); border: 1px solid var(--rule); }
+  .nm { font-family: var(--font-mono); font-size: 11px; color: var(--ink); }
+  .v { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tok"><div class="box" style="border-radius:2px;"></div><div class="nm">--radius-xs</div><div class="v">2px</div></div>
+  <div class="tok"><div class="box" style="border-radius:3px;"></div><div class="nm">--radius-sm</div><div class="v">3px · buttons/inputs</div></div>
+  <div class="tok"><div class="box" style="border-radius:4px;"></div><div class="nm">--radius-md</div><div class="v">4px · cards</div></div>
+  <div class="tok"><div class="box" style="border-radius:2px;"></div><div class="nm">--radius-tag</div><div class="v">2px · severity tags</div></div>
+</div>
+</body>
+</html>
