@@ -2,9 +2,11 @@
 
 React + TypeScript + Vite frontend for the Floodlight disaster operations copilot.
 
-> **Status:** Phase 1 COMPLETE. Project scaffolded with all dependencies and directory structure.
-> Phase 3 (dashboard layout, map, state management) is next.
-> See [docs/status.md](../docs/status.md) for detailed Phase 3 requirements.
+> **Status:** Phases 1–7 COMPLETE. Operations dashboard, crisis map layers,
+> citizen reporting, command panel, offline support, and a real-time WebSocket
+> feed are implemented. Tests: 86 Vitest + 3 Playwright E2E (`npm run e2e`).
+> The live map needs `VITE_MAPBOX_TOKEN`; otherwise it shows a placeholder.
+> See [docs/status.md](../docs/status.md).
 
 ## Quick Start
 

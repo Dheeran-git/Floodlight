@@ -43,7 +43,7 @@
 floodlight/
 ├── backend/                # FastAPI + SQLAlchemy
 │   ├── app/
-│   │   ├── api/v1/         # Route handlers (12 endpoints)
+│   │   ├── api/v1/         # Route handlers (REST + WebSocket)
 │   │   ├── models/         # SQLAlchemy ORM models (8 tables)
 │   │   ├── schemas/        # Pydantic request/response schemas
 │   │   ├── services/       # Business logic layer
@@ -159,11 +159,16 @@ All endpoints are prefixed with `/api/v1`.
 | POST | `/resources/assign` | Assign unit to incident | ✅ |
 | GET | `/shelters` | List shelters | ✅ |
 | GET | `/shelters/risk` | Get overflow predictions | ✅ |
-| POST | `/optimization/run` | Trigger optimization | ✅ (stub) |
-| GET | `/optimization/{run_id}` | Get optimization results | ✅ (stub) |
-| POST | `/command/query` | Operational Q&A | ✅ (stub) |
+| POST | `/reports/voice` | Voice report (Whisper) | ✅ (needs `WHISPER_API_KEY`) |
+| POST | `/optimization/run` | Trigger optimization | ✅ |
+| GET | `/optimization/{run_id}` | Get optimization results | ✅ |
+| GET | `/prediction/risk` | Forecasted risk zones | ✅ |
+| POST | `/command/query` | Operational Q&A | ✅ |
+| POST | `/simulation/run` | Inject heavy-rain scenario | ✅ |
+| WS | `/ws` | Real-time event feed | ✅ |
 
-> Endpoints marked **stub** return placeholder data. See [STATUS.md](docs/status.md) for what needs real implementation.
+> AI features (triage, command) use Gemini when `GEMINI_API_KEY` is set and a
+> deterministic rule-based engine otherwise. See [STATUS.md](docs/status.md).
 
 ---
 
