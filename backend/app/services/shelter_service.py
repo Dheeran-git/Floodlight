@@ -35,8 +35,8 @@ class ShelterService:
     def get_shelter_risks(self) -> list[ShelterRiskResponse]:
         """Calculate overflow probability for all shelters.
 
-        Uses a simple occupancy ratio as a baseline risk estimate.
-        Predictive escalation model will enhance this in Phase 5.
+        Uses an occupancy-ratio baseline. Area-level forecasting is provided by
+        the predictive escalation engine (`GET /prediction/risk`).
 
         Returns:
             List of shelter risk assessments.
