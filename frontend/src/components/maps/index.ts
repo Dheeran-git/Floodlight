@@ -1,4 +1,4 @@
-/** Map components — Mapbox GL JS integration. */
+/** Map components — MapLibre GL integration. */
 
 export { LazyMap } from './LazyMap'
 export { MapLegend } from './MapLegend'

@@ -134,7 +134,7 @@ React
 TypeScript
 Vite
 TailwindCSS
-Mapbox GL JS
+MapLibre GL
 Framer Motion
 TanStack Query
 Zustand
@@ -561,7 +561,7 @@ Predicted Risk Zones
 
 ---
 
-Mapbox Features
+MapLibre Features
 
 Markers
 
@@ -842,7 +842,7 @@ Frontend
 
 React
 
-Mapbox
+MapLibre
 
 Dashboard
 

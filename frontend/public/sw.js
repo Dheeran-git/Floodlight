@@ -8,7 +8,7 @@
  *   operator dashboard never shows stale data from the SW layer.
  */
 
-const CACHE_VERSION = 'floodlight-v1'
+const CACHE_VERSION = 'floodlight-v2'
 const APP_SHELL = ['/', '/index.html', '/favicon.svg', '/icons.svg']
 
 self.addEventListener('install', (event) => {

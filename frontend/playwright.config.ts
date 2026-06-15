@@ -11,15 +11,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
  * drives the app in a headless browser. Run with `npm run e2e`.
  */
 const BACKEND = path.resolve(__dirname, '../backend')
-// Python tool directory: the local venv by default, or PATH in CI (E2E_PYBIN='').
-const PYBIN = process.env.E2E_PYBIN ?? '.venv/bin/'
-const DB = 'DATABASE_URL=sqlite:///./e2e.db'
-const BACKEND_CMD = [
-  'rm -f e2e.db',
-  `${DB} ${PYBIN}alembic upgrade head`,
-  `${DB} ${PYBIN}python -m app.utils.seed`,
-  `${DB} DEBUG=false ${PYBIN}uvicorn app.main:app --port 8000`,
-].join(' && ')
+const isWindows = process.platform === 'win32'
+const PYBIN = process.env.E2E_PYBIN ?? (isWindows ? '.venv\\Scripts\\' : '.venv/bin/')
+const cleanDbCmd = isWindows ? 'if exist e2e.db del /f /q e2e.db' : 'rm -f e2e.db'
+const BACKEND_CMD = isWindows
+  ? [
+      cleanDbCmd,
+      `call ${PYBIN}alembic upgrade head`,
+      `call ${PYBIN}python -m app.utils.seed`,
+      `call ${PYBIN}uvicorn app.main:app --port 8000`,
+    ].join(' && ')
+  : [
+      cleanDbCmd,
+      `${PYBIN}alembic upgrade head`,
+      `${PYBIN}python -m app.utils.seed`,
+      `${PYBIN}uvicorn app.main:app --port 8000`,
+    ].join(' && ')
 
 export default defineConfig({
   testDir: './e2e',
@@ -41,6 +48,10 @@ export default defineConfig({
       url: 'http://localhost:8000/api/v1/health',
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
+      env: {
+        DATABASE_URL: 'sqlite:///./e2e.db',
+        DEBUG: 'false',
+      },
     },
     {
       command: 'npm run dev -- --port 5173',

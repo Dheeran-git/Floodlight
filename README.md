@@ -16,7 +16,7 @@
 |--------|-------------|--------|
 | **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS + offline queue · voice needs `ELEVENLABS_API_KEY` |
 | **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | ✅ Gemini or rule-based fallback |
-| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Layers built · needs `VITE_MAPBOX_TOKEN` to render |
+| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Built with token-free `maplibre-gl` |
 | **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` · Wolfram or local model |
 | **Optimization Engine** | Resource allocation, route planning, shelter balancing | ✅ NetworkX + SciPy · Wolfram risk sim |
 | **Command Intelligence** | Operational Q&A with AI-powered reasoning | ✅ Gemini or rule-based fallback |
@@ -29,7 +29,7 @@
 
 | Layer | Technologies |
 |-------|-------------|
-| **Frontend** | React 19, TypeScript, Vite, TailwindCSS v4, Mapbox GL JS, Framer Motion, Zustand, TanStack Query |
+| **Frontend** | React 19, TypeScript, Vite, TailwindCSS v4, MapLibre GL, Framer Motion, Zustand, TanStack Query |
 | **Backend** | FastAPI, Python 3.12, SQLAlchemy 2.0, PostgreSQL (SQLite fallback), Pydantic v2 |
 | **AI** | Gemini API, ElevenLabs Speech-to-Text API |
 | **Optimization** | NetworkX, Wolfram Language |

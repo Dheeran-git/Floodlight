@@ -1,4 +1,4 @@
-import mapboxgl from 'mapbox-gl'
+import maplibregl from 'maplibre-gl'
 
 import type { Incident, RescueUnit, Report, RiskZone, Shelter } from '@/types'
 import {
@@ -29,10 +29,10 @@ interface MarkerSpec {
   popup: string
 }
 
-function addMarkers(map: mapboxgl.Map, specs: MarkerSpec[]): mapboxgl.Marker[] {
+function addMarkers(map: maplibregl.Map, specs: MarkerSpec[]): maplibregl.Marker[] {
   return specs.map((spec) => {
-    const popup = new mapboxgl.Popup({ offset: 14 }).setHTML(spec.popup)
-    return new mapboxgl.Marker({ element: spec.element })
+    const popup = new maplibregl.Popup({ offset: 14 }).setHTML(spec.popup)
+    return new maplibregl.Marker({ element: spec.element })
       .setLngLat([spec.lng, spec.lat])
       .setPopup(popup)
       .addTo(map)
@@ -114,7 +114,7 @@ function riskZoneSpecs(zones: RiskZone[]): MarkerSpec[] {
 }
 
 /** Render all data-layer markers; returns them for later cleanup. */
-export function renderMarkers(map: mapboxgl.Map, data: MapData): mapboxgl.Marker[] {
+export function renderMarkers(map: maplibregl.Map, data: MapData): maplibregl.Marker[] {
   // Risk zones render first so point markers sit on top of the area discs.
   const specs = [
     ...riskZoneSpecs(data.riskZones ?? []),

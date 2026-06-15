@@ -7,7 +7,7 @@ import type { Incident, RescueUnit, Report, Shelter } from '@/types'
 // Track every Marker that gets constructed so tests can assert positions/count.
 const markerInstances: Array<{ lngLat: [number, number] | null }> = []
 
-vi.mock('mapbox-gl', () => {
+vi.mock('maplibre-gl', () => {
   class Popup {
     setHTML() {
       return this

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 
@@ -42,7 +43,7 @@ export function ReportForm({ severity, mode, onSubmitSuccess }: ReportFormProps)
 
   // Timer simulation for voice recording
   useEffect(() => {
-    let interval: NodeJS.Timeout
+    let interval: ReturnType<typeof setInterval> | undefined
     if (voiceRecording) {
       interval = setInterval(() => {
         setVoiceSeconds((prev) => {
@@ -57,7 +58,9 @@ export function ReportForm({ severity, mode, onSubmitSuccess }: ReportFormProps)
     } else {
       setVoiceSeconds(0)
     }
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) clearInterval(interval)
+    }
   }, [voiceRecording])
 
   const canSubmit =

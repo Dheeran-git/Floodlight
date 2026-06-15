@@ -5,7 +5,7 @@ React + TypeScript + Vite frontend for the Floodlight disaster operations copilo
 > **Status:** Phases 1–7 COMPLETE. Operations dashboard, crisis map layers,
 > citizen reporting, command panel, offline support, and a real-time WebSocket
 > feed are implemented. Tests: 86 Vitest + 3 Playwright E2E (`npm run e2e`).
-> The live map needs `VITE_MAPBOX_TOKEN`; otherwise it shows a placeholder.
+> The live map uses open-source `maplibre-gl` maps and requires no token.
 > See [docs/status.md](../docs/status.md).
 
 ## Quick Start
@@ -30,14 +30,14 @@ npm run dev
 | TanStack Query | latest | Server state / data fetching |
 | Framer Motion | latest | Animations |
 | React Router | latest | Client-side routing |
-| Mapbox GL JS | — | Crisis map (install in Phase 3) |
+| MapLibre GL | — | Crisis map (install in Phase 3) |
 
 ## Project Structure
 
 ```
 src/
 ├── components/          # Reusable UI components
-│   ├── maps/            # Mapbox map layers & controls
+│   ├── maps/            # MapLibre map layers & controls
 │   ├── dashboard/       # Dashboard layout panels
 │   ├── incidents/       # Incident list, detail, severity badges
 │   ├── resources/       # Rescue unit cards, assignment UI
@@ -96,9 +96,9 @@ const answer = await api.command.query('Which area is highest risk?')
 
 ## Next Steps (Phase 3)
 
-1. Install Mapbox GL JS: `npm install mapbox-gl @types/mapbox-gl`
+1. Install MapLibre GL: `npm install maplibre-gl`
 2. Create dashboard layout in `components/dashboard/`
-3. Create Mapbox container in `components/maps/`
+3. Create MapLibre container in `components/maps/`
 4. Create Zustand stores in `state/`
 5. Create TanStack Query hooks in `hooks/`
 6. Build UI primitives in `components/ui/`

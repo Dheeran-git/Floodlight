@@ -2,12 +2,12 @@ import { Suspense, lazy } from 'react'
 
 import type { MapData } from './mapMarkers'
 
-// Code-split Mapbox into its own chunk so the app shell loads without it.
+// Code-split MapLibre into its own chunk so the app shell loads without it.
 const MapContainer = lazy(() =>
   import('./MapContainer').then((m) => ({ default: m.MapContainer })),
 )
 
-/** Loading placeholder shown while the Mapbox chunk is fetched. */
+/** Loading placeholder shown while the MapLibre chunk is fetched. */
 function MapLoading() {
   return (
     <div className="flex h-full w-full items-center justify-center bg-gray-900">

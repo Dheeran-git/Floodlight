@@ -217,8 +217,8 @@ Tables are auto-created on startup via `Base.metadata.create_all()`. Use Alembic
 **Suggested Owner:** Member 3 (Frontend)
 **Priority:** HIGH — Day 2
 
-Delivered: dark-theme dashboard shell (`components/dashboard/`), Mapbox map
-container with graceful no-token fallback (`components/maps/MapContainer.tsx`),
+Delivered: dark-theme dashboard shell (`components/dashboard/`), MapLibre GL map
+container (`components/maps/MapContainer.tsx`),
 real routing in `App.tsx` (OperationsDesk + CitizenPortal pages), Zustand stores
 (`state/`), TanStack Query hooks (`hooks/`), UI primitives (`components/ui/`:
 Badge, Card, StatusIndicator, SidePanel), and live incident/resource/shelter
@@ -240,17 +240,17 @@ Create the main operations dashboard shell:
 
 ### 3.2 Map Container
 
-Set up Mapbox GL JS:
+Set up MapLibre GL:
 
-- Install `mapbox-gl` and `@types/mapbox-gl`
+- Install `maplibre-gl`
 - Create MapContainer component
 - Configure with Bengaluru center coordinates (~12.97, 77.59)
-- Dark map style
+- Dark map style (CARTO Dark Matter style layer JSON)
 - Placeholder layers (markers will be added in Phase 5)
 
 **Where to code:** `frontend/src/components/maps/`
 
-**Requires:** Mapbox token in `.env` → `VITE_MAPBOX_TOKEN`
+**Requires:** None (uses free public tile styles)
 
 ### 3.3 Routing
 
@@ -312,7 +312,7 @@ Build base UI components:
 ### Acceptance Criteria
 
 - [x] Dashboard shell renders with dark theme
-- [x] Map loads centered on Bengaluru (placeholder when `VITE_MAPBOX_TOKEN` unset)
+- [x] Map loads centered on Bengaluru (token-free MapLibre vector layers)
 - [x] Navigation works between routes
 - [x] Zustand stores created for incidents/resources/shelters
 - [x] At least one TanStack Query hook fetches data from backend
@@ -398,7 +398,7 @@ The main feature phase is implemented end-to-end. AI features (triage, command)
 use Google Gemini when `GEMINI_API_KEY` is set and fall back to deterministic
 rule-based logic otherwise, so the whole pipeline runs and is verifiable without
 external keys. Voice transcription requires `ELEVENLABS_API_KEY` (returns 503
-otherwise); the live map requires `VITE_MAPBOX_TOKEN` (placeholder otherwise).
+otherwise); the live map uses open-source MapLibre GL and does not require a token.
 
 **Delivered**
 - 5.1 Citizen reporting: report form (text + geolocation) → `POST /reports`;
@@ -564,7 +564,7 @@ Wire optimization engine to the backend service:
 
 ### Map Layers
 
-Add Mapbox layers for each data type:
+Add MapLibre layers for each data type:
 
 | Layer | Visualization | Data Source |
 |-------|--------------|-------------|
@@ -702,7 +702,7 @@ optimization_complete
   `POST /simulation/run`): injects a scripted "heavy rain" scenario of escalating
   reports through the live triage → fusion → WebSocket pipeline; triggered from
   the dashboard via `SimulationButton`. Maps to the demo script (docs/plan.md §24).
-- **Performance**: Mapbox is code-split via `LazyMap` (React.lazy/Suspense);
+- **Performance**: MapLibre is code-split via `LazyMap` (React.lazy/Suspense);
   the main entry chunk dropped from ~2,055 kB to ~289 kB.
 - **Bug fixes**: resolved the oversized-bundle build warning; hardened
   `publish_event` against a non-running event loop.
@@ -740,7 +740,7 @@ npm run dev
 - `backend/app/services/prediction/` — Create this directory
 
 ### Member 3 (Frontend)
-- `frontend/src/components/maps/` — Mapbox layers
+- `frontend/src/components/maps/` — MapLibre layers
 - `frontend/src/components/dashboard/` — Dashboard layout
 - `frontend/src/pages/CitizenPortal/` — Report form
 - `frontend/src/pages/OperationsDesk/` — Main dashboard
@@ -758,7 +758,7 @@ npm run dev
 ```
 GEMINI_API_KEY=        # Member 1 needs this
 ELEVENLABS_API_KEY=    # Member 1 needs this
-MAPBOX_TOKEN=          # Member 3 needs this
+# No MAPBOX_TOKEN needed (MapLibre is token-free)
 WOLFRAM_APP_ID=        # Member 2 needs this
 DATABASE_URL=          # Member 4 for PostgreSQL
 ```

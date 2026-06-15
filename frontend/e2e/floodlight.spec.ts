@@ -17,7 +17,7 @@ test('citizen submits an SOS report and gets confirmation', async ({ page }) => 
 
   await page.getByRole('button', { name: /Submit report/i }).click()
 
-  await expect(page.getByText(/Report received/i)).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Report received/i })).toBeVisible()
 })
 
 test('operations desk shows seeded data and runs optimization', async ({ page }) => {

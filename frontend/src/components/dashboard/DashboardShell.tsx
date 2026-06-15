@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Header } from './Header'
 import { Sidebar } from './Sidebar'
+import { StatusBar } from './StatusBar'
 
 interface DashboardShellProps {
   children: ReactNode
@@ -13,6 +14,9 @@ interface DashboardShellProps {
 /** Operations dashboard frame: broadsheet header, LeftRail, and content slot. */
 export function DashboardShell({
   children,
+  incidentCount = 0,
+  unitCount = 0,
+  shelterCount = 0,
 }: DashboardShellProps) {
   return (
     <div className="flex h-screen flex-col bg-paper text-ink overflow-hidden font-ui">
@@ -23,6 +27,11 @@ export function DashboardShell({
           {children}
         </main>
       </div>
+      <StatusBar
+        incidentCount={incidentCount}
+        unitCount={unitCount}
+        shelterCount={shelterCount}
+      />
     </div>
   )
 }
