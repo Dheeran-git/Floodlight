@@ -1,7 +1,7 @@
 """Incident service — business logic for operational incidents.
 
-Handles incident listing and detail retrieval.
-Incident fusion (merging duplicate reports) will be added in Phase 5.
+Handles incident listing and detail retrieval. Incident fusion (merging
+duplicate reports) lives in ``app.services.triage.fusion``.
 """
 
 import logging

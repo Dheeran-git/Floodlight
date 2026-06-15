@@ -68,6 +68,9 @@ coverage/
 .pytest_cache/
 .mypy_cache/
 .vitest/
+playwright-report/
+test-results/
+.playwright/
 
 # ===========================
 # Alembic
