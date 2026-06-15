@@ -9,10 +9,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-# Force settings override for tests BEFORE importing database or main app
+# Override settings BEFORE importing the database or app. Application modules
+# bind ``get_settings`` at import time (``from app.config import get_settings``),
+# so the patch must be installed first for them to pick it up. This forces the
+# no-key fallbacks (SQLite, rule-based AI, no transcription) for deterministic
+# tests regardless of the host environment.
 import app.config
 
 _original_get_settings = app.config.get_settings
+
 
 def _mock_get_settings():
     settings = _original_get_settings()
@@ -20,6 +25,7 @@ def _mock_get_settings():
     settings.GEMINI_API_KEY = ""
     settings.ELEVENLABS_API_KEY = ""
     return settings
+
 
 app.config.get_settings = _mock_get_settings
 
