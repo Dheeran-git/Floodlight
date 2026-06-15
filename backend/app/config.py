@@ -52,8 +52,15 @@ class Settings(BaseSettings):
 
     @property
     def effective_database_url(self) -> str:
-        """Return the database URL, falling back to SQLite for local dev."""
+        """Return the database URL, falling back to SQLite for local dev.
+
+        Normalizes the legacy ``postgres://`` scheme that some managed hosts
+        (e.g. Render, Heroku) hand out to ``postgresql://``, which SQLAlchemy
+        2.x requires.
+        """
         if self.DATABASE_URL:
+            if self.DATABASE_URL.startswith("postgres://"):
+                return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
             return self.DATABASE_URL
         return "sqlite:///./floodlight_dev.db"
 
