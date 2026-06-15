@@ -5,17 +5,14 @@ extend. Keeps SQLAlchemy session logic in one place.
 """
 
 import uuid
-from typing import Generic, TypeVar
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import Base
 
-ModelType = TypeVar("ModelType", bound=Base)
 
-
-class BaseRepository(Generic[ModelType]):
+class BaseRepository[ModelType: Base]:
     """Generic repository providing standard CRUD operations.
 
     Attributes:

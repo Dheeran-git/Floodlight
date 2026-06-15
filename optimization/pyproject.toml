@@ -19,3 +19,16 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+# The importable package is the PEP 420 namespace ``optimization.engine``
+# resolved from the repo root (kept namespace-clean: no ``optimization/__init__.py``).
+# Ship the local ``engine/`` package so the wheel builds; tests and the backend
+# import via the ``optimization`` namespace with the repo root on ``sys.path``.
+[tool.hatch.build.targets.wheel]
+packages = ["engine"]
+
+[tool.pytest.ini_options]
+# Put the repo root on sys.path so ``import optimization.engine`` resolves from
+# source during tests via the PEP 420 namespace package.
+pythonpath = [".."]
+testpaths = ["tests"]

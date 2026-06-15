@@ -4,11 +4,10 @@ Provides factory functions for composing services with their
 repository dependencies. Used by FastAPI's Depends() system.
 """
 
+from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models.optimization_run import OptimizationRun
-from app.repositories.base import BaseRepository
 from app.repositories.incident_repository import IncidentRepository
 from app.repositories.report_repository import ReportRepository
 from app.repositories.rescue_unit_repository import RescueUnitRepository
@@ -21,7 +20,7 @@ from app.services.resource_service import ResourceService
 from app.services.shelter_service import ShelterService
 
 
-def get_report_service(db: Session = next(get_db())) -> ReportService:
+def get_report_service(db: Session = Depends(get_db)) -> ReportService:
     """Create a ReportService with its repository.
 
     Args:
@@ -33,7 +32,7 @@ def get_report_service(db: Session = next(get_db())) -> ReportService:
     return ReportService(repository=ReportRepository(db))
 
 
-def get_incident_service(db: Session = next(get_db())) -> IncidentService:
+def get_incident_service(db: Session = Depends(get_db)) -> IncidentService:
     """Create an IncidentService with its repository.
 
     Args:
@@ -45,7 +44,7 @@ def get_incident_service(db: Session = next(get_db())) -> IncidentService:
     return IncidentService(repository=IncidentRepository(db))
 
 
-def get_resource_service(db: Session = next(get_db())) -> ResourceService:
+def get_resource_service(db: Session = Depends(get_db)) -> ResourceService:
     """Create a ResourceService with its repository.
 
     Args:
@@ -57,7 +56,7 @@ def get_resource_service(db: Session = next(get_db())) -> ResourceService:
     return ResourceService(repository=RescueUnitRepository(db))
 
 
-def get_shelter_service(db: Session = next(get_db())) -> ShelterService:
+def get_shelter_service(db: Session = Depends(get_db)) -> ShelterService:
     """Create a ShelterService with its repository.
 
     Args:
@@ -70,7 +69,7 @@ def get_shelter_service(db: Session = next(get_db())) -> ShelterService:
 
 
 def get_optimization_service(
-    db: Session = next(get_db()),
+    db: Session = Depends(get_db),
 ) -> OptimizationService:
     """Create an OptimizationService with its repository.
 
@@ -80,15 +79,16 @@ def get_optimization_service(
     Returns:
         Configured OptimizationService instance.
     """
-    return OptimizationService(
-        repository=BaseRepository(OptimizationRun, db)
-    )
+    return OptimizationService(db=db)
 
 
-def get_command_service() -> CommandService:
-    """Create a CommandService.
+def get_command_service(db: Session = Depends(get_db)) -> CommandService:
+    """Create a CommandService with a database session.
+
+    Args:
+        db: Database session.
 
     Returns:
         Configured CommandService instance.
     """
-    return CommandService()
+    return CommandService(db=db)

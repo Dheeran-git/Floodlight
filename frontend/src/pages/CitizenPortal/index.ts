@@ -1,2 +1,3 @@
 /** Citizen portal page — report submission interface. */
-export {}
+
+export { CitizenPortal } from './CitizenPortal'

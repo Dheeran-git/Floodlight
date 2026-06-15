@@ -14,12 +14,12 @@
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | 🔲 Phase 5 |
-| **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | 🔲 Phase 5 |
-| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | 🔲 Phase 3 |
-| **Predictive Escalation** | Forecast worsening areas before they become critical | 🔲 Phase 5 |
-| **Optimization Engine** | Resource allocation, route planning, shelter balancing | 🔲 Phase 5 |
-| **Command Intelligence** | Operational Q&A with AI-powered reasoning | 🔲 Phase 5 |
+| **Citizen Reporting** | Text/voice reports with GPS, offline queueing | ✅ Text + GPS + offline queue · voice needs `WHISPER_API_KEY` |
+| **AI Triage** | Automatic severity scoring, credibility analysis, duplicate fusion | ✅ Gemini or rule-based fallback |
+| **Live Crisis Map** | Real-time operational picture with incidents, resources, shelters, routes | ✅ Layers built · needs `VITE_MAPBOX_TOKEN` to render |
+| **Predictive Escalation** | Forecast worsening areas before they become critical | ✅ `GET /prediction/risk` · Wolfram or local model |
+| **Optimization Engine** | Resource allocation, route planning, shelter balancing | ✅ NetworkX + SciPy · Wolfram risk sim |
+| **Command Intelligence** | Operational Q&A with AI-powered reasoning | ✅ Gemini or rule-based fallback |
 
 > See [STATUS.md](docs/status.md) for detailed implementation progress.
 
@@ -43,7 +43,7 @@
 floodlight/
 ├── backend/                # FastAPI + SQLAlchemy
 │   ├── app/
-│   │   ├── api/v1/         # Route handlers (12 endpoints)
+│   │   ├── api/v1/         # Route handlers (REST + WebSocket)
 │   │   ├── models/         # SQLAlchemy ORM models (8 tables)
 │   │   ├── schemas/        # Pydantic request/response schemas
 │   │   ├── services/       # Business logic layer
@@ -159,11 +159,16 @@ All endpoints are prefixed with `/api/v1`.
 | POST | `/resources/assign` | Assign unit to incident | ✅ |
 | GET | `/shelters` | List shelters | ✅ |
 | GET | `/shelters/risk` | Get overflow predictions | ✅ |
-| POST | `/optimization/run` | Trigger optimization | ✅ (stub) |
-| GET | `/optimization/{run_id}` | Get optimization results | ✅ (stub) |
-| POST | `/command/query` | Operational Q&A | ✅ (stub) |
+| POST | `/reports/voice` | Voice report (Whisper) | ✅ (needs `WHISPER_API_KEY`) |
+| POST | `/optimization/run` | Trigger optimization | ✅ |
+| GET | `/optimization/{run_id}` | Get optimization results | ✅ |
+| GET | `/prediction/risk` | Forecasted risk zones | ✅ |
+| POST | `/command/query` | Operational Q&A | ✅ |
+| POST | `/simulation/run` | Inject heavy-rain scenario | ✅ |
+| WS | `/ws` | Real-time event feed | ✅ |
 
-> Endpoints marked **stub** return placeholder data. See [STATUS.md](docs/status.md) for what needs real implementation.
+> AI features (triage, command) use Gemini when `GEMINI_API_KEY` is set and a
+> deterministic rule-based engine otherwise. See [STATUS.md](docs/status.md).
 
 ---
 

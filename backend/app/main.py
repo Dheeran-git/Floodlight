@@ -7,9 +7,10 @@ Creates and configures the FastAPI application with:
 - Structured logging
 """
 
+import asyncio
 import logging
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_router
 from app.config import get_settings
 from app.database import Base, engine
+from app.services.events import manager
 
 settings = get_settings()
 
@@ -44,6 +46,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Create tables (for development; use Alembic migrations in production)
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables created/verified.")
+
+    # Capture the running loop so sync handlers can broadcast WebSocket events.
+    manager.loop = asyncio.get_running_loop()
 
     yield
 

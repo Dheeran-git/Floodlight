@@ -71,6 +71,10 @@ export const api = {
     risks: () => apiFetch<unknown[]>('/shelters/risk'),
   },
 
+  prediction: {
+    risk: () => apiFetch<unknown[]>('/prediction/risk'),
+  },
+
   optimization: {
     run: () =>
       apiFetch<{ success: boolean; run_id: string }>('/optimization/run', {
@@ -84,6 +88,18 @@ export const api = {
       apiFetch<{ answer: string }>('/command/query', {
         method: 'POST',
         body: JSON.stringify({ query }),
+      }),
+  },
+
+  simulation: {
+    run: () =>
+      apiFetch<{
+        success: boolean
+        scenario: string
+        reports_created: number
+        report_ids: string[]
+      }>('/simulation/run', {
+        method: 'POST',
       }),
   },
 }
