@@ -111,7 +111,7 @@ Engine  Engine      Engine
  ▼         ▼         ▼
 
 Gemini   PostgreSQL Wolfram
-Whisper  Redis      NetworkX
+ElevenLabs Redis      NetworkX
 
            │
            ▼
@@ -134,7 +134,7 @@ React
 TypeScript
 Vite
 TailwindCSS
-Mapbox GL JS
+MapLibre GL
 Framer Motion
 TanStack Query
 Zustand
@@ -176,7 +176,7 @@ Used For:
 
 ---
 
-Whisper
+ElevenLabs
 
 Used For:
 
@@ -561,7 +561,7 @@ Predicted Risk Zones
 
 ---
 
-Mapbox Features
+MapLibre Features
 
 Markers
 
@@ -812,7 +812,7 @@ MEMBER 1
 
 AI/NLP
 
-Whisper
+ElevenLabs
 
 Gemini
 
@@ -842,7 +842,7 @@ Frontend
 
 React
 
-Mapbox
+MapLibre
 
 Dashboard
 
@@ -884,7 +884,7 @@ DAY 2
 
 Citizen Reporting
 
-Whisper Integration
+ElevenLabs Integration
 
 Gemini Triage
 

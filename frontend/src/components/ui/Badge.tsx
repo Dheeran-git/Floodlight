@@ -1,25 +1,36 @@
 import type { Severity } from '@/types'
 
-/** Tailwind classes for each severity level (high contrast on dark theme). */
 const SEVERITY_STYLES: Record<Severity, string> = {
-  P0: 'bg-red-500/20 text-red-300 border-red-500/40',
-  P1: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
-  P2: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
-  P3: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+  P0: 'text-red-300 bg-red-300/5 border-red-300/20',
+  P1: 'text-orange-300 bg-orange-300/5 border-orange-300/20',
+  P2: 'text-yellow-300 bg-yellow-300/5 border-yellow-300/20',
+  P3: 'text-blue-300 bg-blue-300/5 border-blue-300/20',
+}
+
+const SEVERITY_BG: Record<Severity, string> = {
+  P0: 'bg-sev-critical',
+  P1: 'bg-sev-high',
+  P2: 'bg-sev-moderate',
+  P3: 'bg-sev-stable',
 }
 
 interface BadgeProps {
   severity: Severity
   label?: string
+  small?: boolean
 }
 
-/** Severity badge rendering a P0–P3 indicator with severity-specific color. */
-export function Badge({ severity, label }: BadgeProps) {
+/** Severity badge rendering a P0–P3 indicator with severity-specific color and vertical line tick. */
+export function Badge({ severity, label, small = false }: BadgeProps) {
+  const labelText = label ?? severity
   return (
     <span
-      className={`inline-flex items-center rounded border px-2 py-0.5 text-xs font-semibold ${SEVERITY_STYLES[severity]}`}
+      className={`inline-flex items-center gap-1.5 rounded-[2px] border px-1.5 py-0.5 font-mono font-medium tracking-wider ${
+        small ? 'text-[10px]' : 'text-[11px]'
+      } ${SEVERITY_STYLES[severity]}`}
     >
-      {label ?? severity}
+      <span className={`w-[3px] rounded-[1px] ${small ? 'h-[9px]' : 'h-[11px]'} ${SEVERITY_BG[severity]}`} />
+      {labelText}
     </span>
   )
 }

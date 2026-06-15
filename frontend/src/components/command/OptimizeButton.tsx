@@ -1,6 +1,6 @@
 import { useOptimization } from '@/hooks'
 
-/** Button that runs the resource optimizer and shows an assignment summary. */
+/** Button that runs the resource optimizer and shows an assignment summary in broadsheet styling. */
 export function OptimizeButton() {
   const mutation = useOptimization()
   const count = Array.isArray(mutation.data?.deployment_plan)
@@ -8,22 +8,22 @@ export function OptimizeButton() {
     : null
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 select-none">
       <button
         type="button"
         onClick={() => mutation.mutate()}
         disabled={mutation.isPending}
-        className="w-full rounded border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-sm font-medium text-cyan-300 hover:bg-cyan-500/20 disabled:opacity-50"
+        className="w-full rounded-[3px] border border-ink bg-paper px-3 py-2 text-[13px] font-semibold text-ink hover:bg-accent-tint disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
       >
-        {mutation.isPending ? 'Optimizing…' : 'Run optimization'}
+        {mutation.isPending ? 'Optimizing…' : 'Run Optimization'}
       </button>
       {mutation.isError && (
-        <p className="text-xs text-red-300">
+        <p className="text-xs text-sev-critical font-mono">
           {(mutation.error as Error).message || 'Optimization failed.'}
         </p>
       )}
       {mutation.isSuccess && (
-        <p className="text-xs text-cyan-300">
+        <p className="text-xs text-sev-stable font-mono uppercase tracking-wide">
           {count !== null
             ? `Optimization complete: ${count} assignments.`
             : 'Optimization complete.'}

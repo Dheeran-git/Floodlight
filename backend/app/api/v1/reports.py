@@ -74,7 +74,7 @@ def create_voice_report(
     if not transcription_available():
         raise HTTPException(
             status_code=503,
-            detail="Voice transcription is not configured (set WHISPER_API_KEY).",
+            detail="Voice transcription is not configured (set ELEVENLABS_API_KEY).",
         )
     audio_bytes = audio.file.read(_MAX_AUDIO_BYTES + 1)
     if len(audio_bytes) > _MAX_AUDIO_BYTES:

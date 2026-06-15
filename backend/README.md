@@ -4,7 +4,7 @@ FastAPI backend for the Floodlight disaster operations copilot.
 
 > **Status:** Phases 1–7 COMPLETE. AI triage, incident fusion, optimization,
 > prediction, command intelligence, WebSockets, and simulation are implemented
-> (Gemini/Whisper/Wolfram use rule-based fallbacks without API keys). 70 pytest
+> (Gemini/ElevenLabs/Wolfram use rule-based fallbacks without API keys). 70 pytest
 > tests. See [docs/status.md](../docs/status.md).
 
 ## Quick Start
@@ -41,7 +41,7 @@ uvicorn app.main:app --reload
 | POST | /api/v1/resources/assign | ✅ |
 | GET | /api/v1/shelters | ✅ |
 | GET | /api/v1/shelters/risk | ✅ |
-| POST | /api/v1/reports/voice | ✅ (needs `WHISPER_API_KEY`) |
+| POST | /api/v1/reports/voice | ✅ (needs `ELEVENLABS_API_KEY`) |
 | POST | /api/v1/optimization/run | ✅ |
 | GET | /api/v1/optimization/{run_id} | ✅ |
 | GET | /api/v1/prediction/risk | ✅ |
