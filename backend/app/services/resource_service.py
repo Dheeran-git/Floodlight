@@ -38,8 +38,8 @@ class ResourceService:
     ) -> bool:
         """Assign a rescue unit to an incident.
 
-        Updates the unit's status to 'assigned'. Route generation
-        will be handled by the optimization engine in Phase 5.
+        Updates the unit's status to 'assigned' and broadcasts the event. Route
+        generation is handled by the optimization engine (`POST /optimization/run`).
 
         Args:
             resource_id: UUID of the rescue unit.

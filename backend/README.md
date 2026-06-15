@@ -2,8 +2,10 @@
 
 FastAPI backend for the Floodlight disaster operations copilot.
 
-> **Status:** Phase 2 COMPLETE. Server is fully operational with 12 API endpoints.
-> See [docs/status.md](../docs/status.md) for what needs real business logic.
+> **Status:** Phases 1–7 COMPLETE. AI triage, incident fusion, optimization,
+> prediction, command intelligence, WebSockets, and simulation are implemented
+> (Gemini/Whisper/Wolfram use rule-based fallbacks without API keys). 70 pytest
+> tests. See [docs/status.md](../docs/status.md).
 
 ## Quick Start
 
@@ -39,9 +41,13 @@ uvicorn app.main:app --reload
 | POST | /api/v1/resources/assign | ✅ |
 | GET | /api/v1/shelters | ✅ |
 | GET | /api/v1/shelters/risk | ✅ |
-| POST | /api/v1/optimization/run | ⚠️ Stub |
-| GET | /api/v1/optimization/{run_id} | ⚠️ Stub |
-| POST | /api/v1/command/query | ⚠️ Stub |
+| POST | /api/v1/reports/voice | ✅ (needs `WHISPER_API_KEY`) |
+| POST | /api/v1/optimization/run | ✅ |
+| GET | /api/v1/optimization/{run_id} | ✅ |
+| GET | /api/v1/prediction/risk | ✅ |
+| POST | /api/v1/command/query | ✅ |
+| POST | /api/v1/simulation/run | ✅ |
+| WS | /api/v1/ws | ✅ |
 
 ## Architecture
 
@@ -57,7 +63,7 @@ app/
 ├── api/v1/          # Route handlers (thin — no business logic)
 ├── models/          # SQLAlchemy ORM models (8 tables)
 ├── schemas/         # Pydantic request/response schemas
-├── services/        # Business logic (add Gemini/optimization here)
+├── services/        # Business logic (triage, optimization, prediction, command, events)
 ├── repositories/    # Data access layer (SQL queries)
 ├── utils/           # Shared utilities
 ├── config.py        # Settings management (reads .env)
@@ -73,14 +79,16 @@ app/
 - Tables are auto-created on startup
 - Use Alembic for production migrations
 
-## Adding Business Logic
+## Business Logic (implemented)
 
-When implementing Phase 5 features:
+1. **AI Triage:** `app/services/triage/` (classifier + fusion), called from `report_service.py`
+2. **Optimization:** `optimization/engine/` wired via `optimization_service.py`
+3. **Prediction:** `app/services/prediction/` → `GET /prediction/risk`
+4. **Command:** `command_service.py` (Gemini or rule-based, with reasoning)
+5. **WebSocket:** `app/api/v1/websocket.py` + `app/services/events.py`
 
-1. **AI Triage:** Create `app/services/triage/` → import in `report_service.py`
-2. **Optimization:** Wire `optimization/engine/` into `optimization_service.py`
-3. **Command:** Replace stub in `command_service.py` with Gemini calls
-4. **WebSocket:** Create `app/api/v1/websocket.py`
+AI services (triage, command) use Gemini when `GEMINI_API_KEY` is set and a
+deterministic rule-based engine otherwise.
 5. **Seed Data:** Create `app/utils/seed.py`
 
 ## Lint & Format

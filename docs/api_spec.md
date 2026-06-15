@@ -6,8 +6,8 @@ Base URL
 
 /api/v1
 
-> Implementation Status: All 12 endpoints are implemented and responding.
-> Endpoints for optimization and command return stub data — real logic in Phase 5.
+> Implementation Status: All endpoints implemented with real logic (AI features
+> fall back to deterministic rules without API keys). Plus a WebSocket feed.
 > Swagger UI available at http://localhost:8000/docs
 
 ---
@@ -50,6 +50,23 @@ Response
 
 ---
 
+POST /reports/voice
+
+Create a report from a voice recording (multipart form). Transcribes the audio
+via Whisper, then runs the same triage pipeline. Returns 503 if
+`WHISPER_API_KEY` is not configured, 413 if the upload exceeds 25 MB.
+
+Form fields: `latitude`, `longitude`, `audio` (file)
+
+Response
+
+{
+  "success": true,
+  "report_id": "REP-002"
+}
+
+---
+
 # INCIDENTS
 
 GET /incidents
@@ -61,8 +78,12 @@ Response
 [
   {
     "id": "INC-001",
+    "title": "Whitefield rooftop rescues",
     "severity": "P0",
-    "priority_score": 91
+    "priority_score": 91,
+    "status": "active",
+    "latitude": 12.9698,
+    "longitude": 77.75
   }
 ]
 
@@ -135,12 +156,32 @@ Response
 
 GET /optimization/{run_id}
 
-Returns results.
+Returns results, including the reasoned deployment plan and shelter advice.
 
 Response
 
 {
-  "deployment_plan": []
+  "id": "OPT-001",
+  "algorithm": "networkx+scipy",
+  "deployment_plan": [
+    {
+      "unit_id": "UNIT-001",
+      "incident_id": "INC-001",
+      "distance_km": 1.2,
+      "eta_minutes": 2,
+      "reasoning": "Boat Team Alpha -> P0 incident: assigned at 1.2 km ...",
+      "route_coordinates": [[12.97, 77.59], [12.97, 77.75]],
+      "route_safe": true
+    }
+  ],
+  "shelter_advice": [
+    {
+      "name": "Jayanagar Community Complex",
+      "occupancy_ratio": 0.96,
+      "overflow_risk": 0.96,
+      "recommendation": "Near capacity (96%); redirect new arrivals to ..."
+    }
+  ]
 }
 
 ---
@@ -195,6 +236,68 @@ Response
   "answer":
   "Whitefield has highest escalation risk."
 }
+
+---
+
+# PREDICTION
+
+GET /prediction/risk
+
+Returns forecasted risk zones (clustered active incidents). The projection is
+computed by Wolfram when `WOLFRAM_APP_ID` is set, or a local logistic model.
+
+Response
+
+[
+  {
+    "center_lat": 12.9698,
+    "center_lon": 77.75,
+    "radius_km": 1.5,
+    "risk_score": 99.2,
+    "predicted_risk_score": 100.0,
+    "escalation_probability": 0.99,
+    "incident_count": 3,
+    "reasoning": "3 active incident(s); ... Wolfram projects 100 within 45 min."
+  }
+]
+
+---
+
+# SIMULATION
+
+POST /simulation/run
+
+Injects a scripted "heavy rain" scenario (escalating reports) through the live
+triage -> fusion -> WebSocket pipeline. Used for demos and tests.
+
+Response
+
+{
+  "success": true,
+  "scenario": "heavy_rain",
+  "reports_created": 7,
+  "report_ids": ["REP-101", "REP-102"]
+}
+
+---
+
+# REAL-TIME
+
+WS /ws
+
+WebSocket event feed. The server pushes JSON events as operational data
+changes; clients read them to update the map in real time.
+
+Event
+
+{
+  "type": "incident_updated",
+  "data": { "incident_id": "INC-001", "severity": "P0", "priority_score": 98 },
+  "timestamp": "2026-06-15T02:00:00Z"
+}
+
+Event types: `report_created`, `incident_created`, `incident_updated`,
+`resource_assigned`, `optimization_complete`.
 
 ---
 

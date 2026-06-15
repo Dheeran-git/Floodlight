@@ -2,9 +2,9 @@
 
 Graph-based optimization for rescue routing, resource allocation, and shelter balancing.
 
-> **Status:** Phase 1 COMPLETE. Project scaffolded with stubs.
-> Phase 5 requires implementing all three modules.
-> See [docs/status.md](../docs/status.md) → Phase 5.3 for detailed requirements.
+> **Status:** COMPLETE. NetworkX flood-aware graph + A* routing, SciPy min-cost
+> allocation, shelter balancing, and a Wolfram risk-simulation module are
+> implemented (`engine/`). 26 pytest tests. See [docs/status.md](../docs/status.md).
 
 ## Quick Start
 
@@ -34,7 +34,7 @@ engine/
 └── allocation.py   # Min-cost resource assignment + shelter balancing
 ```
 
-## What Needs Implementation (Phase 5)
+## Engine Modules
 
 ### graph.py — Road Network
 
@@ -56,13 +56,18 @@ engine/
 - Priority order: P0 > P1 > P2 > P3, then closest unit
 - `balance_shelters(shelters, predicted_arrivals)` — prevent overflow
 
-### Backend Integration
+### wolfram.py — Risk Simulation
 
-The optimization service at `backend/app/services/optimization_service.py` has a stub that needs to call these functions. The integration point is:
+- `simulate_risk_escalation(...)` — logistic risk projection via Wolfram|Alpha
+  when `WOLFRAM_APP_ID` is set, or an identical local model otherwise.
+
+### Backend Integration (wired)
+
+`backend/app/services/optimization_service.py` builds engine inputs from live
+data and calls these functions (via `app/utils/engine.py`, which bridges the
+namespace import). Prediction uses `wolfram` the same way.
 
 ```python
-# backend/app/services/optimization_service.py
-# Replace the stub trigger_run() method with real calls to:
 from optimization.engine.graph import build_road_graph
 from optimization.engine.routing import find_safe_route
 from optimization.engine.allocation import allocate_resources
